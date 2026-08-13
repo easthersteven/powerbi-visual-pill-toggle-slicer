@@ -1,0 +1,32 @@
+{
+    "dataRoles": [
+        { "displayName": "Field", "name": "field", "kind": "Grouping" }
+    ],
+    "dataViewMappings": [
+        {
+            "categorical": {
+                "categories": { "for": { "in": "field" }, "dataReductionAlgorithm": { "top": { "count": 100 } } }
+            }
+        }
+    ],
+    "objects": {
+        "general": {
+            "properties": {
+                "filter": { "type": { "filter": {} } }
+            }
+        },
+        "pill": {
+            "properties": {
+                "selectedColor": { "type": { "fill": { "solid": { "color": true } } } },
+                "selectedText": { "type": { "fill": { "solid": { "color": true } } } },
+                "color": { "type": { "fill": { "solid": { "color": true } } } },
+                "fontSize": { "type": { "numeric": true } },
+                "enableDefault": { "type": { "bool": true } },
+                "defaultValue": { "type": { "text": true } }
+            }
+        }
+    },
+    "supportsHighlight": false,
+    "supportsSynchronizingFilterState": true,
+    "privileges": []
+}
