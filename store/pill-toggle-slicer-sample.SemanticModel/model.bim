@@ -64,7 +64,7 @@
         ]
       },
       {
-        "name": "Revenue",
+        "name": "Sales",
         "columns": [
           {
             "name": "Period",
@@ -115,7 +115,7 @@
         ],
         "partitions": [
           {
-            "name": "Revenue",
+            "name": "Sales",
             "mode": "import",
             "source": {
               "type": "m",
@@ -150,7 +150,7 @@
     "annotations": [
       {
         "name": "PBI_QueryOrder",
-        "value": "[\"Period\", \"Revenue\"]"
+        "value": "[\"Period\", \"Sales\"]"
       },
       {
         "name": "__PBI_TimeIntelligenceEnabled",
