@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Pill Toggle Slicer sample"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "3579c198-059b-5c62-8691-26bbefde5a4c"
+  }
+}

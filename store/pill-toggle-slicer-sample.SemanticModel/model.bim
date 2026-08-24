@@ -1,0 +1,162 @@
+{
+  "compatibilityLevel": 1550,
+  "model": {
+    "culture": "en-GB",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-GB",
+    "tables": [
+      {
+        "name": "Period",
+        "columns": [
+          {
+            "name": "Period",
+            "dataType": "string",
+            "sourceColumn": "Period",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "SortOrder",
+            "dataType": "int64",
+            "sourceColumn": "SortOrder",
+            "summarizeBy": "none",
+            "isHidden": true,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "measures": [],
+        "partitions": [
+          {
+            "name": "Period",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45W8g1xUdJRMlSK1YlWCgSzjcDsSDDbWCk2FgA=\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Period = _t, SortOrder = _t]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Period\", type text}, {\"SortOrder\", Int64.Type}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      },
+      {
+        "name": "Sales",
+        "columns": [
+          {
+            "name": "Period",
+            "dataType": "string",
+            "sourceColumn": "Period",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "Region",
+            "dataType": "string",
+            "sourceColumn": "Region",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          },
+          {
+            "name": "RevenueValue",
+            "dataType": "double",
+            "sourceColumn": "RevenueValue",
+            "summarizeBy": "none",
+            "isHidden": false,
+            "annotations": [
+              {
+                "name": "SummarizationSetBy",
+                "value": "Automatic"
+              }
+            ]
+          }
+        ],
+        "measures": [
+          {
+            "name": "Revenue",
+            "expression": "SUM('Sales'[RevenueValue])",
+            "formatString": "#,0.0",
+            "annotations": []
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Sales",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45W8g1xUdJR8ssvKskA0oZGFnomSrE6MPHg/FKwuKW5nhmScHhqcQlItYmxniFYOBDFFGNLQz0jJHGYKcYGRnoWSOJQY0yAlpqDhSNRHWMKVG+JJAEzx9DQAubMSBT3mJkb65kqxcYCAA==\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Period = _t, Region = _t, RevenueValue = _t]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Period\", type text}, {\"Region\", type text}, {\"RevenueValue\", type number}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ],
+        "annotations": [
+          {
+            "name": "PBI_ResultType",
+            "value": "Table"
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "Period-Sales",
+        "fromTable": "Sales",
+        "fromColumn": "Period",
+        "toTable": "Period",
+        "toColumn": "Period",
+        "crossFilteringBehavior": "oneDirection"
+      }
+    ],
+    "annotations": [
+      {
+        "name": "PBI_QueryOrder",
+        "value": "[\"Period\", \"Sales\"]"
+      },
+      {
+        "name": "__PBI_TimeIntelligenceEnabled",
+        "value": "0"
+      }
+    ]
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "txNotes",
+  "position": {
+    "x": 640,
+    "y": 150,
+    "z": 0,
+    "width": 600,
+    "height": 430,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "What to look at",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "fontWeight": "bold",
+                      "color": "#1F908C"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Single select by design - one pill is active at a time, which is what a period or scenario switch should do.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Default selection - clear the filter and MTD reapplies itself, so the report never sits in an unfiltered state.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Real filtering - the slicer applies a basic filter on the bound column, so every other visual on the page responds, including native ones.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Sync across pages - it participates in filter state synchronisation like a native slicer.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

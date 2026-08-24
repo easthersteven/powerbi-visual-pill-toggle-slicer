@@ -1,0 +1,36 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "txLead",
+  "position": {
+    "x": 40,
+    "y": 80,
+    "z": 0,
+    "width": 900,
+    "height": 56,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "A horizontal single-select slicer that reads as a control, not a list box - and falls back to a default selection when the filter is cleared.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

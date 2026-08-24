@@ -1,0 +1,70 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
+  "name": "vzSlicer",
+  "position": {
+    "x": 40,
+    "y": 150,
+    "z": 0,
+    "width": 560,
+    "height": 70,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "pillToggleSlicer17CF177366264F91B44C2C53979DB313",
+    "query": {
+      "queryState": {
+        "field": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Period"
+                    }
+                  },
+                  "Property": "Period"
+                }
+              },
+              "queryRef": "Period.Period",
+              "nativeQueryRef": "Period"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "pill": [
+        {
+          "properties": {
+            "enableDefault": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "defaultValue": {
+              "expr": {
+                "Literal": {
+                  "Value": "'MTD'"
+                }
+              }
+            },
+            "selectedColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#016C8D'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
