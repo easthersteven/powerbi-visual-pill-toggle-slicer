@@ -27,7 +27,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 
 **Help link:** https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer#readme
 **Privacy policy link:** https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/blob/main/PRIVACY.md
-**Support link:** https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/issues
+**Support document link:** https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/blob/main/SUPPORT.md
+**Support (issues) link:** https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/issues
 
 **Media:**
 - Logo 300x300: `store/icon-300x300.png`
