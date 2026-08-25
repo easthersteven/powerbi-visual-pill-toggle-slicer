@@ -43,8 +43,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 - Support document link: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/blob/main/SUPPORT.md
 
 **Technical configuration page:**
-- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.0.0.0.pbiviz`
-  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.0.0.0.pbiviz`)
+- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.2.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.2.0.0.pbiviz`)
 - Sample PBIX: `store/pill-toggle-slicer-sample.pbix` - must open offline with no external
   connections, embed its own sample data, and use this exact visual version.
 
@@ -59,6 +59,6 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
    Verified: npm audit clean, eslint clean, `pbiviz package --certification-audit`
    reports no external requests, capabilities declare `"privileges": []`.
 
-**Pre-publish checks (24 Aug 2026, v1.0.0.0):** npm audit 0 vulnerabilities; eslint
+**Pre-publish checks (26 Aug 2026, v1.2.0.0):** npm audit 0 vulnerabilities; eslint
 clean; unit tests pass; certification audit found no external requests; logo 300x300 and
 screenshot 1366x768 within size limits; main and certification branches identical.
