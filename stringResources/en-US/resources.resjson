@@ -1,0 +1,7 @@
+{
+    "field": "Field",
+    "Landing_Title": "Pill Toggle Slicer",
+    "Landing_Body": "Bind a column to the Field bucket - each distinct value becomes a pill. Works best with two to six values, such as a period or scenario switch.",
+    "Tooltip_Selected": "selected - click to clear",
+    "Tooltip_Unselected": "click to filter the page"
+}

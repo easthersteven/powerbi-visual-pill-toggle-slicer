@@ -20,6 +20,12 @@ function makeHost(captured) {
             clear: () => Promise.resolve(),
             select: () => Promise.resolve()
         }),
+        colorPalette: captured.palette,
+        get hostCapabilities() { return captured.hostCapabilities; },
+        tooltipService: {
+            show: (o) => { captured.tooltips.push(o); },
+            hide: () => { captured.tooltipHides++; }
+        },
         applyJsonFilter: (filter, objectName, propertyName, action) => {
             captured.filters.push({ filter, objectName, propertyName, action });
         }
@@ -27,7 +33,7 @@ function makeHost(captured) {
 }
 
 function makeVisual() {
-    const captured = { events: [], filters: [], contextMenus: 0 };
+    const captured = { events: [], filters: [], contextMenus: 0, tooltips: [], tooltipHides: 0, palette: { isHighContrast: false, foreground: { value: '#ffffff' }, background: { value: '#000000' } } };
     const element = document.createElement("div");
     document.body.appendChild(element);
     const visual = new Visual({ host: makeHost(captured), element });
@@ -106,4 +112,53 @@ test("right-click opens the context menu", () => {
     visual.update({ dataViews: [dataView(["A"])], jsonFilters: [] });
     element.dispatchEvent(new dom.window.MouseEvent("contextmenu", { bubbles: true }));
     assert.equal(captured.contextMenus, 1);
+});
+
+// ---- certification policy 1180.2.2.x -------------------------------------------------
+
+test("scrolls rather than clipping when the host shrinks the visual (1180.2.2)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const less = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8");
+    const root = less.slice(0, less.indexOf(".pill-toggle {", 1));
+    assert.match(root, /overflow:\s*auto/, "the root container must scroll, not clip");
+    assert.doesNotMatch(root, /overflow:\s*hidden/, "overflow:hidden clips pills when resized");
+});
+
+test("shows a tooltip on a pill naming the bound field (1180.2.2.2)", () => {
+    const { visual, element, captured } = makeVisual();
+    visual.update({ dataViews: [dataView(["MTD", "QTD", "YTD"])] });
+    const pill = element.querySelector(".pill");
+    pill.dispatchEvent(new dom.window.MouseEvent("mousemove", { clientX: 5, clientY: 5, bubbles: true }));
+    assert.equal(captured.tooltips.length, 1);
+    assert.equal(captured.tooltips[0].dataItems[0].value, "MTD");
+    pill.dispatchEvent(new dom.window.MouseEvent("mouseleave", { bubbles: true }));
+    assert.ok(captured.tooltipHides > 0);
+});
+
+test("high contrast: pill colours come from the host palette", () => {
+    const { visual, element, captured } = makeVisual();
+    captured.palette.isHighContrast = true;
+    visual.update({ dataViews: [dataView(["MTD", "QTD"])] });
+    assert.equal(element.style.background, "rgb(0, 0, 0)");
+    assert.equal(element.querySelector(".pill").style.color, "rgb(255, 255, 255)");
+});
+
+test("respects Edit interactions being turned off", () => {
+    const { visual, element, captured } = makeVisual();
+    captured.hostCapabilities = { allowInteractions: false };
+    visual.update({ dataViews: [dataView(["MTD", "QTD"])] });
+    element.querySelector(".pill").dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
+    assert.equal(captured.filters.length, 0, "clicking must not filter when interactions are off");
+});
+
+test("landing page explains the visual when no field is bound", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [{ metadata: {}, categorical: { categories: [] } }] });
+    assert.ok(element.querySelector(".pill-landing-title"));
+});
+
+test("pills are native buttons, so they are keyboard reachable", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView(["MTD", "QTD"])] });
+    assert.equal(element.querySelector(".pill").tagName, "BUTTON");
 });

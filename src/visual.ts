@@ -10,6 +10,9 @@ import IVisual = powerbi.extensibility.visual.IVisual;
 import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import IVisualEventService = powerbi.extensibility.IVisualEventService;
 import ISelectionManager = powerbi.extensibility.ISelectionManager;
+import ITooltipService = powerbi.extensibility.ITooltipService;
+import ISandboxExtendedColorPalette = powerbi.extensibility.ISandboxExtendedColorPalette;
+import ILocalizationManager = powerbi.extensibility.ILocalizationManager;
 import FilterAction = powerbi.FilterAction;
 import DataView = powerbi.DataView;
 
@@ -22,6 +25,9 @@ export class Visual implements IVisual {
     private host: IVisualHost;
     private events: IVisualEventService;
     private selectionManager: ISelectionManager;
+    private tooltipService: ITooltipService;
+    private colorPalette: ISandboxExtendedColorPalette;
+    private localization: ILocalizationManager;
     private root: HTMLElement;
     private lastFontSize = 11;
     private lastSel = "#1F908C";
@@ -34,6 +40,9 @@ export class Visual implements IVisual {
         this.host = options.host;
         this.events = options.host.eventService;
         this.selectionManager = options.host.createSelectionManager();
+        this.tooltipService = options.host.tooltipService;
+        this.colorPalette = options.host.colorPalette as ISandboxExtendedColorPalette;
+        this.localization = options.host.createLocalizationManager?.();
         this.root = options.element;
         this.root.classList.add("pill-toggle-root");
         this.root.addEventListener("contextmenu", (ev) => {
@@ -42,22 +51,59 @@ export class Visual implements IVisual {
         });
     }
 
+
+    // Localized string with the English text as the fallback.
+    private text(key: string, fallback: string): string {
+        try {
+            return this.localization?.getDisplayName(key) || fallback;
+        } catch {
+            return fallback;
+        }
+    }
+
+    // Shown when no field is bound yet, so an empty slicer explains itself.
+    private renderLandingPage(): void {
+        const page = el("div", "pill-landing");
+        const title = el("div", "pill-landing-title"); title.textContent = this.text("Landing_Title", "Pill Toggle Slicer");
+        const body = el("div", "pill-landing-body");
+        body.textContent = this.text("Landing_Body",
+            "Bind a column to the Field bucket - each distinct value becomes a pill. Works best "
+            + "with two to six values, such as a period or scenario switch.");
+        page.appendChild(title); page.appendChild(body);
+        this.root.appendChild(page);
+    }
+
     public update(options: VisualUpdateOptions): void {
         this.events.renderingStarted(options);
         try {
             while (this.root.firstChild) this.root.removeChild(this.root.firstChild);
             const dv: DataView = options.dataViews?.[0];
             const cat = dv?.categorical?.categories?.[0];
-            if (!cat || !cat.values?.length) { this.events.renderingFinished(options); return; }
+            if (!cat || !cat.values?.length) {
+                this.renderLandingPage();
+                this.events.renderingFinished(options);
+                return;
+            }
 
             const o = dv.metadata?.objects?.["pill"] as Record<string, unknown> | undefined;
-            const selColor = fill(o, "selectedColor", "#1F908C");
-            const selText = fill(o, "selectedText", "#FFFFFF");
-            const baseColor = fill(o, "color", "#605E5C");
+            let selColor = fill(o, "selectedColor", "#1F908C");
+            let selText = fill(o, "selectedText", "#FFFFFF");
+            let baseColor = fill(o, "color", "#605E5C");
             const fontSize = (o?.["fontSize"] as number) ?? 11;
             const enableDefault = (o?.["enableDefault"] as boolean) ?? false;
             const defaultValue = (o?.["defaultValue"] as string) ?? "";
             this.lastFontSize = fontSize;
+            // High contrast mode: colours come from the host palette, and the selected pill is
+            // inverted so selection stays visible in a two-colour theme.
+            if (this.colorPalette?.isHighContrast === true) {
+                const fore = this.colorPalette.foreground?.value;
+                const back = this.colorPalette.background?.value;
+                selColor = fore; selText = back; baseColor = fore;
+                this.root.style.background = back;
+            } else {
+                this.root.style.background = "";
+            }
+
             this.lastSel = selColor; this.lastSelText = selText; this.lastBase = baseColor;
             this.lastEnableDefault = enableDefault; this.lastDefaultValue = defaultValue;
 
@@ -86,9 +132,29 @@ export class Visual implements IVisual {
                 pill.style.fontSize = fontSize + "px";
                 if (isSel) { pill.style.background = selColor; pill.style.color = selText; pill.style.borderColor = selColor; }
                 else { pill.style.color = baseColor; }
+                // Host tooltip on hover, naming the bound field (policy 1180.2.2.2).
+                pill.addEventListener("mousemove", (ev) => {
+                    const rect = this.root.getBoundingClientRect();
+                    this.tooltipService?.show({
+                        coordinates: [ev.clientX - rect.left, ev.clientY - rect.top],
+                        isTouchEvent: false,
+                        dataItems: [{
+                            displayName: cat.source.displayName ?? "Value",
+                            value: val,
+                        }, {
+                            displayName: "Selection",
+                            value: isSel
+                                ? this.text("Tooltip_Selected", "selected - click to clear")
+                                : this.text("Tooltip_Unselected", "click to filter the page"),
+                        }],
+                        identities: [],
+                    });
+                });
+                pill.addEventListener("mouseleave", () => this.tooltipService?.hide({ immediately: true, isTouchEvent: false }));
                 pill.addEventListener("click", (ev) => {
                     ev.stopPropagation();
-                    if (!target.column) return;
+                    // Honour the report's Edit interactions setting.
+                    if (!target.column || this.host.hostCapabilities?.allowInteractions === false) return;
                     // click the active pill again to clear (back to the unfiltered state)
                     const action = isSel ? FilterAction.remove : FilterAction.merge;
                     this.host.applyJsonFilter(basicFilter(target, v) as unknown as powerbi.IFilter, "general", "filter", action);

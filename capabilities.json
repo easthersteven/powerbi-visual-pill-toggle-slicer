@@ -4,6 +4,7 @@
     ],
     "dataViewMappings": [
         {
+            "conditions": [ { "field": { "max": 1 } } ],
             "categorical": {
                 "categories": { "for": { "in": "field" }, "dataReductionAlgorithm": { "top": { "count": 100 } } }
             }
@@ -28,5 +29,10 @@
     },
     "supportsHighlight": false,
     "supportsSynchronizingFilterState": true,
+    "tooltips": {
+        "supportedTypes": { "default": true, "canvas": true }
+    },
+    "supportsKeyboardFocus": true,
+    "supportsLandingPage": true,
     "privileges": []
 }

@@ -3,7 +3,9 @@
     height: 100%;
     display: flex;
     align-items: center;
-    overflow: hidden;
+    // Scroll rather than clip when the host shrinks the visual, so wrapped pills on the
+    // lower rows stay reachable at any size (certification policy 1180.2.2).
+    overflow: auto;
     font-family: "Segoe UI", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -29,4 +31,26 @@
     }
     .pill:hover { border-color: #1F908C; }
     .pill.sel { font-weight: 600; }
+}
+
+.pill-toggle-root .pill-landing {
+    padding: 10px 12px;
+    color: #605E5C;
+    font-size: 11px;
+
+    .pill-landing-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #023864;
+        margin-bottom: 3px;
+    }
+
+    .pill-landing-body {
+        line-height: 1.45;
+    }
+}
+
+.pill-toggle-root .pill:focus-visible {
+    outline: 2px solid #1F908C;
+    outline-offset: 1px;
 }
