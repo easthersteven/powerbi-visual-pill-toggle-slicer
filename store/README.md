@@ -18,7 +18,7 @@ Tips page. Turn it into a .pbix once:
    tick **Store reports using enhanced metadata format (PBIR)**. Restart Desktop.
 2. Open `store/pill-toggle-slicer-sample.pbip`.
 3. **Insert > More visuals > Import a visual from a file** and pick
-   `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.0.0.0.pbiviz`. If the visual container is still
+   `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.2.0.0.pbiviz`. If the visual container is still
    blank, close and reopen the project - Desktop registers the visual on load.
 4. **Ctrl+S** to save the project (this writes the visual into the report definition).
 5. **File > Save as** > `store/pill-toggle-slicer-sample.pbix`.
