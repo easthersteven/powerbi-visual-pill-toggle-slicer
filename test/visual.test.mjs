@@ -101,10 +101,10 @@ test("does not reapply the default once a filter is present", () => {
     assert.equal(captured.filters.length, 0);
 });
 
-test("getFormattingModel exposes text, colour, and default cards", () => {
+test("getFormattingModel exposes text, colour, shape and default cards", () => {
     const { visual } = makeVisual();
-    const model = visual.getFormattingModel();
-    assert.equal(model.cards.length, 3);
+    const names = visual.getFormattingModel().cards.map((c) => c.displayName);
+    assert.deepEqual(names, ["Text", "Colours", "Shape", "Default"]);
 });
 
 test("right-click opens the context menu", () => {
@@ -161,4 +161,67 @@ test("pills are native buttons, so they are keyboard reachable", () => {
     const { visual, element } = makeVisual();
     visual.update({ dataViews: [dataView(["MTD", "QTD"])] });
     assert.equal(element.querySelector(".pill").tagName, "BUTTON");
+});
+
+// ---- Format pane coverage ------------------------------------------------------------
+
+// Collect every propertyName the Format pane actually renders, walking cards > groups > slices.
+function paneProperties(model) {
+    const names = new Set();
+    for (const card of model.cards ?? []) {
+        for (const group of card.groups ?? []) {
+            for (const slice of group.slices ?? []) {
+                const props = slice.control?.properties ?? {};
+                if (props.descriptor?.propertyName) names.add(props.descriptor.propertyName);
+                for (const v of Object.values(props)) {
+                    if (v && typeof v === "object" && v.descriptor?.propertyName) names.add(v.descriptor.propertyName);
+                }
+            }
+        }
+    }
+    return names;
+}
+
+// At API 5.x the Format pane is built solely from getFormattingModel, so a property declared
+// in capabilities.json but missing here is unreachable to the report author - it can only be
+// set by hand-editing a theme file. This guards against that drifting back.
+test("every declared property is reachable in the Format pane", async () => {
+    const { readFileSync } = await import("node:fs");
+    const caps = JSON.parse(readFileSync(new URL("../capabilities.json", import.meta.url), "utf8"));
+    const declared = Object.keys(caps.objects.pill.properties);
+    const { visual } = makeVisual();
+    const shown = paneProperties(visual.getFormattingModel());
+    const missing = declared.filter((p) => !shown.has(p));
+    assert.deepEqual(missing, [], "properties declared but not shown in the Format pane");
+});
+
+test("pills render the configured font, colours and corner radius", () => {
+    const { visual, element } = makeVisual();
+    const objects = {
+        pill: {
+            fontFamily: "Georgia, serif",
+            fontSize: 18,
+            borderRadius: 14,
+            unselectedBg: { solid: { color: "#eeddcc" } },
+            borderColor: { solid: { color: "#334455" } },
+            color: { solid: { color: "#112233" } }
+        }
+    };
+    visual.update({ dataViews: [dataView(["A", "B"], objects)], jsonFilters: [] });
+    assert.equal(element.style.fontFamily, "Georgia, serif");
+    const pill = element.querySelector("button.pill");
+    assert.equal(pill.style.fontSize, "18px");
+    assert.equal(pill.style.borderRadius, "14px");
+    assert.equal(pill.style.background, "rgb(238, 221, 204)");
+    assert.equal(pill.style.borderColor, "rgb(51, 68, 85)");
+    assert.equal(pill.style.color, "rgb(17, 34, 51)");
+});
+
+test("out-of-range sizes from a hand-edited theme fall back to the defaults", () => {
+    const { visual, element } = makeVisual();
+    const objects = { pill: { fontSize: 9999, borderRadius: -5 } };
+    visual.update({ dataViews: [dataView(["A"], objects)], jsonFilters: [] });
+    const pill = element.querySelector("button.pill");
+    assert.equal(pill.style.fontSize, "11px");
+    assert.equal(pill.style.borderRadius, "6px");
 });

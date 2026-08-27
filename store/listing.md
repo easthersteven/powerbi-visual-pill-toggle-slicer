@@ -18,7 +18,7 @@ Key features:
 - **One click filtering.** Each pill applies a basic filter on the bound field. Selection is single select by design, so the report always reflects exactly one choice.
 - **Compact.** A full slicer in a strip a single line tall. Pills wrap onto extra lines if the visual is narrow.
 - **Configurable default.** Choose which value is selected when the report opens, so viewers always land on the intended view.
-- **Styleable.** Selected and unselected colours, text colour and font size are all set in the Format pane, so the pills match your report theme.
+- **Styleable.** Font family and size, selected and unselected pill colours, text colours, border colour and corner radius are all set in the Format pane, so the pills match your report theme.
 - **Certified friendly.** No external services, no data leaves your report, and the visual supports the Rendering Events API and context menus.
 
 Use it wherever a row of pills reads better than a dropdown: month/quarter/year switches, region pickers, actual vs budget scenarios and similar small sets of options.
@@ -43,8 +43,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 - Support document link: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/blob/main/SUPPORT.md
 
 **Technical configuration page:**
-- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.2.0.0.pbiviz`
-  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.2.0.0.pbiviz`)
+- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.3.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.3.0.0.pbiviz`)
 - Sample PBIX: `store/pill-toggle-slicer-sample.pbix` - must open offline with no external
   connections, embed its own sample data, and use this exact visual version.
 
@@ -59,6 +59,6 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
    Verified: npm audit clean, eslint clean, `pbiviz package --certification-audit`
    reports no external requests, capabilities declare `"privileges": []`.
 
-**Pre-publish checks (26 Aug 2026, v1.2.0.0):** npm audit 0 vulnerabilities; eslint
+**Pre-publish checks (27 Aug 2026, v1.3.0.0):** npm audit 0 vulnerabilities; eslint
 clean; unit tests pass; certification audit found no external requests; logo 300x300 and
 screenshot 1366x768 within size limits; main and certification branches identical.

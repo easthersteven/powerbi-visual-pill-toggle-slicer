@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.3.0.0 (2026-08-27)
+
+Adds the text and shape controls the slicer was missing.
+
+- **Font family.** A font picker sets the typeface for the whole slicer; it was hardcoded to
+  Segoe UI in the stylesheet.
+- **Unselected pill background and border colour** are now settable. They were fixed at
+  `#FFFFFF` and `#C8C6C4` in the stylesheet, so an unselected pill could not be themed.
+- **Corner radius** is settable, replacing the fixed 6px.
+- High contrast mode drives the new colours from the host palette alongside the existing ones.
+- Numeric settings are range-checked, so an out-of-range value from a hand-edited theme file
+  falls back to the default instead of rendering an unusable slicer.
+- A test asserts that every property declared in `capabilities.json` appears in the Format
+  pane, so this cannot regress silently.
+
 ## 1.2.0.0 (2026-08-26)
 
 Audited against the Microsoft certification policies and the reviewer test list after the

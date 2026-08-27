@@ -1,36 +1,128 @@
 {
     "dataRoles": [
-        { "displayName": "Field", "name": "field", "kind": "Grouping" }
+        {
+            "displayName": "Field",
+            "name": "field",
+            "kind": "Grouping"
+        }
     ],
     "dataViewMappings": [
         {
-            "conditions": [ { "field": { "max": 1 } } ],
+            "conditions": [
+                {
+                    "field": {
+                        "max": 1
+                    }
+                }
+            ],
             "categorical": {
-                "categories": { "for": { "in": "field" }, "dataReductionAlgorithm": { "top": { "count": 100 } } }
+                "categories": {
+                    "for": {
+                        "in": "field"
+                    },
+                    "dataReductionAlgorithm": {
+                        "top": {
+                            "count": 100
+                        }
+                    }
+                }
             }
         }
     ],
     "objects": {
         "general": {
             "properties": {
-                "filter": { "type": { "filter": {} } }
+                "filter": {
+                    "type": {
+                        "filter": {}
+                    }
+                }
             }
         },
         "pill": {
             "properties": {
-                "selectedColor": { "type": { "fill": { "solid": { "color": true } } } },
-                "selectedText": { "type": { "fill": { "solid": { "color": true } } } },
-                "color": { "type": { "fill": { "solid": { "color": true } } } },
-                "fontSize": { "type": { "numeric": true } },
-                "enableDefault": { "type": { "bool": true } },
-                "defaultValue": { "type": { "text": true } }
+                "selectedColor": {
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "selectedText": {
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "color": {
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "fontSize": {
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "enableDefault": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "defaultValue": {
+                    "type": {
+                        "text": true
+                    }
+                },
+                "fontFamily": {
+                    "type": {
+                        "formatting": {
+                            "fontFamily": true
+                        }
+                    }
+                },
+                "unselectedBg": {
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "borderColor": {
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "borderRadius": {
+                    "type": {
+                        "numeric": true
+                    }
+                }
             }
         }
     },
     "supportsHighlight": false,
     "supportsSynchronizingFilterState": true,
     "tooltips": {
-        "supportedTypes": { "default": true, "canvas": true }
+        "supportedTypes": {
+            "default": true,
+            "canvas": true
+        }
     },
     "supportsKeyboardFocus": true,
     "supportsLandingPage": true,
