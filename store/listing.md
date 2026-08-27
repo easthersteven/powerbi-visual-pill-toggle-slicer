@@ -50,14 +50,68 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 
 **Certification:**
 1. Offer setup page: tick **Request Power BI certification**.
-2. Review and publish page, **Notes for certification** box, paste:
+2. Review and publish page, **Notes for certification** box, paste everything
+   between the rules below (reviewer-facing only - nothing in it is a note to self):
 
-   Source code: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer
-   Branch: certification (matches the submitted package exactly)
+   ---
+   Pill Toggle Slicer 1.3.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
+   Supersedes 1.0.0.0, reviewed 26 August 2026.
+
+   SOURCE AND BUILD
+   Repository: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer
+   Branch: certification - byte-identical to main and to the submitted package.
    Access: public repository, no credentials required.
-   Build: npm install, then npm run package (powerbi-visuals-tools 7.2.1, API 5.11.0).
-   Verified: npm audit clean, eslint clean, `pbiviz package --certification-audit`
-   reports no external requests, capabilities declare `"privileges": []`.
+   Build: npm install, then npm run package.
+   Tooling: powerbi-visuals-tools 7.2.1, API 5.11.0.
+
+   RESPONSE TO THE REVIEW OF 26 AUGUST 2026
+   1180.2.2.2 tool tips - fixed. Hovering a pill shows the bound field's name and the
+   pill's value through the host tooltip service, plus a line stating whether clicking
+   will filter or clear.
+   1180.2.3 sample file - fixed. The .pbiviz and the visual embedded in the sample .pbix
+   are both 1.3.0.0. The previous submission held packages built from two different
+   versions in the two slots.
+
+   ALSO IN THIS VERSION
+   The Format pane gains a font family picker, an unselected pill background, a border
+   colour and a corner radius; those parts of the slicer previously could not be themed.
+   Numeric settings are range-checked, so an out-of-range value falls back to its default
+   rather than rendering an unusable slicer.
+
+   HOST BEHAVIOUR AND ACCESSIBILITY
+   The slicer applies a real basic filter on the bound column through applyJsonFilter, so
+   every other visual on the page responds, including native ones, and measures using
+   SELECTEDVALUE() over a disconnected table react to it. It declares
+   supportsSynchronizingFilterState and participates in filter synchronisation like a
+   native slicer. The root container is overflow:auto, so pills wrapped onto lower rows
+   stay reachable when the visual is shrunk. High contrast mode takes its colours from
+   the host palette and inverts the selected pill so selection stays visible in a
+   two-colour theme. Pills are focusable and Enter or Space activates them;
+   supportsKeyboardFocus is declared. Honours the report's Edit interactions setting, and
+   supports the Rendering Events API and context menus. Strings are localised through
+   stringResources and the host localization manager, and a landing page explains the
+   visual when nothing is bound.
+
+   NOTE ON THE BOOKMARKS FEATURE CHECK
+   pbiviz package --certification-audit lists Bookmarks as a recommended feature. The
+   check looks for registerOnSelectCallback, which applies to selection-based visuals.
+   This is a filter-based slicer: it restores its state from options.jsonFilters, the
+   documented pattern for filter visuals, so bookmarks and cross-report filter state work
+   correctly. A no-op callback would silence the check without adding behaviour, so it
+   was not added.
+
+   SECURITY AND PRIVACY
+   No external services and no network calls of any kind; no data leaves the report.
+   capabilities.json declares "privileges": []. pbiviz package --certification-audit
+   reports no external requests. npm audit reports 0 vulnerabilities. 25 unit tests pass.
+
+   SAMPLE FILE
+   pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline
+   sample data, with no data sources, connectors or credentials. It embeds visual version
+   1.3.0.0, matching the submitted .pbiviz. Page 1 puts the slicer above a native column
+   chart so filtering is visible, with the default selection set to MTD - clearing the
+   filter reapplies it. Page 2 documents the settings.
+   ---
 
 **Pre-publish checks (27 Aug 2026, v1.3.0.0):** npm audit 0 vulnerabilities; eslint
 clean; unit tests pass; certification audit found no external requests; logo 300x300 and
