@@ -85,6 +85,6 @@ SAMPLE FILE
 pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.3.0.0, matching the submitted .pbiviz. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
 ```
 
-**Pre-publish checks (27 Aug 2026, v1.3.0.0):** npm audit 0 vulnerabilities; eslint
+**Pre-publish checks - all passed; submitted to Partner Center 27 Aug 2026 (v1.3.0.0):** npm audit 0 vulnerabilities; eslint
 clean; unit tests pass; certification audit found no external requests; logo 300x300 and
 screenshot 1366x768 within size limits; main and certification branches identical.
