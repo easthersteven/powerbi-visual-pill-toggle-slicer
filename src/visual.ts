@@ -57,6 +57,11 @@ export class Visual implements IVisual {
         this.localization = options.host.createLocalizationManager?.();
         this.root = options.element;
         this.root.classList.add("pill-toggle-root");
+        // Power BI Desktop's sandbox styles this very element with
+        // `body.visual-sandbox #sandbox-host { overflow: hidden }` - an ID selector that
+        // outweighs any class rule in visual.less. The scroll behaviour policy 1180.2.2
+        // requires must therefore be set inline, which no host stylesheet rule can beat.
+        this.root.style.overflow = "auto";
         this.root.addEventListener("contextmenu", (ev) => {
             this.selectionManager.showContextMenu({} as unknown as powerbi.visuals.ISelectionId, { x: ev.clientX, y: ev.clientY });
             ev.preventDefault();

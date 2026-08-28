@@ -115,7 +115,10 @@ asserts that, so it cannot regress silently.
 reviewer raised against Accent KPI Card on 27 August 2026 (1180.2.2: overlay scrollbars on
 WebView2 paint nothing, so a shrunken visual looks clipped) by styling the scrollbars so a
 visible bar renders whenever content overflows, and adds a Wrap long labels toggle (Format
-pane > Shape). 1.4.0.0 also corrects the scrollbar styling (the standard properties are
+pane > Shape). 1.4.0.0 also sets `overflow: auto` inline from the constructor - the
+Desktop sandbox's `body.visual-sandbox #sandbox-host { overflow: hidden }` ID rule
+outweighs any class rule, so the stylesheet's overflow:auto never took effect in
+Desktop - corrects the scrollbar styling (the standard properties are
 Firefox-gated - on Chromium they restyle the invisible overlay bar), fixes the centred
 pill container clipping its top rows unreachably when the visual is short, validates the
 configured default value before applying it (an unmatched default is ignored, and the

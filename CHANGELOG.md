@@ -17,6 +17,12 @@ the mechanics of.
 - **Wrap long labels (Format pane > Shape).** Off by default (a long label widens its pill
   and the row wraps or scrolls). Turned on, the label breaks onto further lines inside its
   pill instead.
+- **Scrolling now actually works inside Power BI Desktop.** The Desktop sandbox styles
+  the element the visual renders into with `body.visual-sandbox #sandbox-host
+  { overflow: hidden }` - an ID selector that outweighs the stylesheet's class rule, so
+  the slicer's `overflow: auto` was silently overridden in Desktop and pills below the
+  fold were unreachable. `overflow: auto` is now set as an inline style from the
+  constructor, which no host stylesheet rule can beat. Pinned by a unit test.
 - **Scrollbar styling corrected.** The standard `scrollbar-width`/`scrollbar-color`
   properties override `::-webkit-scrollbar` on Chromium and merely restyle the invisible
   overlay bar there, so they are now served to Firefox only
