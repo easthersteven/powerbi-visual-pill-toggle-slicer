@@ -151,10 +151,16 @@ export class Visual implements IVisual {
 
             // DEFAULT (opt-in): if nothing is selected and a default is enabled, auto-apply it. This makes
             // the toggle load on the default and, when cleared, snap back to it. The selectedVal == null
-            // guard stops it re-firing once the filter is set.
+            // guard stops it re-firing once the filter is set. The configured text must match one of the
+            // bound field's actual values - the matching RAW value is what goes into the filter, so a
+            // numeric or date column filters with its own type, and a typo (or a stale default after the
+            // field changes) is ignored instead of filtering the whole report down to nothing.
             if (enableDefault && defaultValue && selectedVal == null && target.column) {
-                this.host.applyJsonFilter(basicFilter(target, defaultValue) as unknown as powerbi.IFilter, "general", "filter", FilterAction.merge);
-                selectedVal = defaultValue;
+                const match = cat.values.find((v) => String(v ?? "") === defaultValue);
+                if (match !== undefined && match !== null) {
+                    this.host.applyJsonFilter(basicFilter(target, match) as unknown as powerbi.IFilter, "general", "filter", FilterAction.merge);
+                    selectedVal = String(match);
+                }
             }
 
             const wrap = el("div", "pill-toggle");
@@ -168,11 +174,13 @@ export class Visual implements IVisual {
                 if (isSel) { pill.style.background = selColor; pill.style.color = selText; pill.style.borderColor = selColor; }
                 else { pill.style.background = unselectedBg; pill.style.color = baseColor; pill.style.borderColor = borderColor; }
                 // Host tooltip on hover, naming the bound field (policy 1180.2.2.2).
-                pill.addEventListener("mousemove", (ev) => {
+                // Touch devices get the same tooltip from a tap (pointerdown), since
+                // mousemove never fires there.
+                const showTip = (ev: MouseEvent, isTouch: boolean) => {
                     const rect = this.root.getBoundingClientRect();
                     this.tooltipService?.show({
                         coordinates: [ev.clientX - rect.left, ev.clientY - rect.top],
-                        isTouchEvent: false,
+                        isTouchEvent: isTouch,
                         dataItems: [{
                             displayName: cat.source.displayName ?? "Value",
                             value: val,
@@ -184,7 +192,9 @@ export class Visual implements IVisual {
                         }],
                         identities: [],
                     });
-                });
+                };
+                pill.addEventListener("mousemove", (ev) => showTip(ev, false));
+                pill.addEventListener("pointerdown", (ev: PointerEvent) => { if (ev.pointerType === "touch") showTip(ev, true); });
                 pill.addEventListener("mouseleave", () => this.tooltipService?.hide({ immediately: true, isTouchEvent: false }));
                 pill.addEventListener("click", (ev) => {
                     ev.stopPropagation();

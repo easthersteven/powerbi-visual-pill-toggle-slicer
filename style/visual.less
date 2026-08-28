@@ -2,18 +2,30 @@
     width: 100%;
     height: 100%;
     display: flex;
-    align-items: center;
+    // NOT align-items: center - centring a flex child taller than its scroll container
+    // clips the overflow at the TOP where scrolling cannot reach it, so the first pill
+    // rows vanish when the visual is short (policy 1180.2.2). Auto margins on the child
+    // (.pill-toggle below) centre it while there is free space and collapse to zero when
+    // there is not, so overflow starts at the top and every row stays scrollable.
+    align-items: stretch;
     // Scroll rather than clip when the host shrinks the visual, so wrapped pills on the
     // lower rows stay reachable at any size (certification policy 1180.2.2).
     overflow: auto;
     // Overlay scrollbars (WebView2 with Windows "automatically hide scroll bars", the
     // Power BI Desktop default) occupy no space and paint nothing until the user scrolls,
-    // so a shrunken slicer looks clipped. Styling the scrollbar opts this element out of
-    // overlay rendering: a visible bar appears whenever content overflows. The standard
-    // properties win on Chromium 121+ and Firefox; the ::-webkit-* rules cover older
-    // WebView2 hosts.
-    scrollbar-width: thin;
-    scrollbar-color: var(--pill-scrollbar-thumb, rgba(96, 94, 92, 0.55)) var(--pill-scrollbar-track, rgba(96, 94, 92, 0.12));
+    // so a shrunken slicer looks clipped. The ::-webkit-scrollbar rules below opt
+    // Chromium out of overlay rendering: a real bar occupies its gutter and stays
+    // painted whenever content overflows.
+    //
+    // The standard scrollbar-width/scrollbar-color properties are served to Firefox ONLY
+    // (it has no ::-webkit-scrollbar). They must not reach Chromium: there they override
+    // the ::-webkit-* rules and merely restyle the OVERLAY scrollbar - thin, fading,
+    // zero layout space - which reintroduces the invisible-scrollbar failure (verified
+    // against Edge with overlay scrollbars force-enabled).
+    @supports (-moz-appearance: none) {
+        scrollbar-width: thin;
+        scrollbar-color: var(--pill-scrollbar-thumb, rgba(96, 94, 92, 0.55)) var(--pill-scrollbar-track, rgba(96, 94, 92, 0.12));
+    }
 
     &::-webkit-scrollbar {
         width: 8px;
@@ -41,6 +53,8 @@
         display: flex;
         gap: 6px;
         flex-wrap: wrap;
+        // vertical centring that stays scrollable - see the align-items note on the root
+        margin: auto 0;
     }
 
     .pill {

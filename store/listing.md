@@ -70,7 +70,7 @@ RESPONSE TO THE REVIEW OF 26 AUGUST 2026
 1180.2.3 sample file - fixed. The .pbiviz and the visual embedded in the sample .pbix are both 1.3.0.0. The previous submission held packages built from two different versions in the two slots.
 
 NEW IN 1.4.0.0
-Scroll bars are now explicitly styled (scrollbar-width/scrollbar-color plus ::-webkit-scrollbar), so a persistent thin bar with a visible track renders whenever content overflows, even on hosts whose overlay scrollbars paint nothing until scrolled (WebView2 with Windows' "automatically hide scroll bars" default). Under high contrast the scrollbar takes its colours from the host palette. A new Wrap long labels toggle (Format pane, Shape) breaks a long label onto further lines inside its pill instead of widening it.
+Scroll bars are now explicitly styled with ::-webkit-scrollbar rules, so a persistent thin bar with a visible track renders whenever content overflows, even on hosts whose overlay scrollbars paint nothing until scrolled (WebView2 with Windows' "automatically hide scroll bars" default); the standard scrollbar-width/scrollbar-color properties are served to Firefox only, where those rules do not exist. The pill container is centred with auto margins rather than align-items, so when the rows are taller than the visual the overflow starts at the top and every row stays reachable by scrolling. A configured default value is validated before it is applied - an unmatched default (a typo, or a stale setting after the bound field changed) is ignored instead of filtering the report to nothing, and the filter carries the column's raw typed value so numeric and date columns filter correctly. Tooltips also show from a tap on touch devices. Under high contrast the scrollbar takes its colours from the host palette. A new Wrap long labels toggle (Format pane, Shape) breaks a long label onto further lines inside its pill instead of widening it.
 
 CARRIED OVER FROM 1.3.0.0
 The Format pane gains a font family picker, an unselected pill background, a border colour and a corner radius; those parts of the slicer previously could not be themed. Numeric settings are range-checked, so an out-of-range value falls back to its default rather than rendering an unusable slicer.
@@ -82,15 +82,14 @@ NOTE ON THE BOOKMARKS FEATURE CHECK
 pbiviz package --certification-audit lists Bookmarks as a recommended feature. The check looks for registerOnSelectCallback, which applies to selection-based visuals. This is a filter-based slicer: it restores its state from options.jsonFilters, the documented pattern for filter visuals, so bookmarks and cross-report filter state work correctly. A no-op callback would silence the check without adding behaviour, so it was not added.
 
 SECURITY AND PRIVACY
-No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 25 unit tests pass.
+No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 29 unit tests pass.
 
 SAMPLE FILE
 pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.4.0.0, matching the .pbiviz above. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
 ```
 
 **Pre-publish checks - passed 28 Aug 2026 (v1.4.0.0), not submitted:** npm audit 0
-vulnerabilities; eslint clean; 25 unit tests pass; certification audit found no external
-requests. The 27 Aug 2026 submission (v1.3.0.0) is still in review; the `certification`
-branch stays at 1.3.0.0 until that completes. Before any 1.4.0.0 submission: open
-`store/pill-toggle-slicer-sample.pbix` once in Power BI Desktop to confirm it renders,
-upload both slots together, and push `main:certification`.
+vulnerabilities; eslint clean; 29 unit tests pass; certification audit found no external
+requests. `main` and `certification` are pushed together at 1.4.0.0 for the offer
+update. Before submitting: open `store/pill-toggle-slicer-sample.pbix` once in Power BI
+Desktop to confirm it renders, then upload both slots together.

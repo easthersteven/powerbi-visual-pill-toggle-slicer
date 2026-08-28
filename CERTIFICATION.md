@@ -115,10 +115,13 @@ asserts that, so it cannot regress silently.
 reviewer raised against Accent KPI Card on 27 August 2026 (1180.2.2: overlay scrollbars on
 WebView2 paint nothing, so a shrunken visual looks clipped) by styling the scrollbars so a
 visible bar renders whenever content overflows, and adds a Wrap long labels toggle (Format
-pane > Shape). The sample .pbix on `main` embeds 1.4.0.0. **The `certification` branch
-stays at 1.3.0.0 until this review completes** - it must match the package under review.
-If the review fails 1180.2.2, resubmit 1.4.0.0 (both slots together) and push
-`main:certification`; if it passes, 1.4.0.0 ships as a normal update later.
+pane > Shape). 1.4.0.0 also corrects the scrollbar styling (the standard properties are
+Firefox-gated - on Chromium they restyle the invisible overlay bar), fixes the centred
+pill container clipping its top rows unreachably when the visual is short, validates the
+configured default value before applying it (an unmatched default is ignored, and the
+filter carries the column's raw typed value), and adds touch tooltips. The sample .pbix
+embeds 1.4.0.0. **`main` and `certification` are pushed together at 1.4.0.0** (the offer
+is being updated); upload both slots together when submitting.
 
 **What went up:** `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.3.0.0.pbiviz` and `store/pill-toggle-slicer-sample.pbix`, uploaded together on the Technical
 configuration page, with the reviewer notes from `store/listing.md` pasted into Notes for

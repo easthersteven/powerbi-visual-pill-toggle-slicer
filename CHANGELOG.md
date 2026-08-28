@@ -17,6 +17,22 @@ the mechanics of.
 - **Wrap long labels (Format pane > Shape).** Off by default (a long label widens its pill
   and the row wraps or scrolls). Turned on, the label breaks onto further lines inside its
   pill instead.
+- **Scrollbar styling corrected.** The standard `scrollbar-width`/`scrollbar-color`
+  properties override `::-webkit-scrollbar` on Chromium and merely restyle the invisible
+  overlay bar there, so they are now served to Firefox only
+  (`@supports (-moz-appearance: none)`); the `::-webkit-scrollbar` rules force the real
+  painted bar on Chromium/WebView2. Pinned by a unit test.
+- **Top pill rows stay reachable.** The root centred the pill container with
+  `align-items: center`; when the rows were taller than the visual, the overflow clipped
+  at the top where scrolling cannot reach, hiding the first rows entirely. Auto margins
+  now centre the container while it fits and collapse to zero when it overflows, so
+  every row scrolls into view (policy 1180.2.2). Pinned by a unit test.
+- **The default value is validated before it filters.** A configured default that matches
+  none of the bound field's values (a typo, or a stale setting after the field changed)
+  is ignored instead of filtering the whole report to nothing, and the filter carries the
+  column's raw typed value, so numeric and date columns filter correctly.
+- **Touch tooltips.** A tap on a pill shows the same tooltip as hovering - mousemove
+  never fires on touch devices.
 
 ## 1.3.0.0 (2026-08-27)
 

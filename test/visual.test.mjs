@@ -124,6 +124,42 @@ test("scrolls rather than clipping when the host shrinks the visual (1180.2.2)",
     assert.doesNotMatch(root, /overflow:\s*hidden/, "overflow:hidden clips pills when resized");
 });
 
+test("scroll bars render even on overlay-scrollbar hosts (1180.2.2)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const raw = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8");
+    const less = raw.replace(/\/\/[^\n]*/g, "");  // comments also mention the property names
+    assert.match(less, /::-webkit-scrollbar\b/, "webkit rules force a painted classic scrollbar on Chromium/WebView2");
+    const guard = less.indexOf("@supports (-moz-appearance: none)");
+    const std = less.indexOf("scrollbar-width");
+    assert.ok(guard >= 0, "the Firefox-only @supports guard must exist");
+    assert.ok(std > guard, "standard scrollbar properties must sit inside the Firefox guard - on Chromium they restyle the invisible overlay scrollbar and defeat the webkit rules");
+    assert.equal(less.split("scrollbar-width").length, 2, "scrollbar-width must appear exactly once, inside the guard");
+});
+
+test("centred pills stay reachable when the visual is shorter than the rows (1180.2.2)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const less = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8").replace(/\/\/[^\n]*/g, "");
+    const root = less.slice(0, less.indexOf(".pill {", 1));
+    assert.doesNotMatch(root, /align-items:\s*center/, "centring a taller-than-container flex child clips the top rows where scrolling cannot reach");
+    assert.match(less, /margin:\s*auto 0/, "auto margins centre the pill container while free space exists and collapse to zero when it overflows");
+});
+
+test("a default that matches no value is ignored instead of filtering the report to nothing", () => {
+    const { visual, element, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "Zzz" } };
+    visual.update({ dataViews: [dataView(["A", "B"], objects)], jsonFilters: [] });
+    assert.equal(captured.filters.length, 0, "an unmatched default must not be applied");
+    assert.equal(element.querySelectorAll("button.pill").length, 2, "pills still render");
+});
+
+test("the default filter carries the bound column's raw typed value, not its string", () => {
+    const { visual, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "2" } };
+    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: [] });
+    assert.equal(captured.filters.length, 1);
+    assert.strictEqual(captured.filters[0].filter.values[0], 2, "a numeric column must be filtered with a number");
+});
+
 test("shows a tooltip on a pill naming the bound field (1180.2.2.2)", () => {
     const { visual, element, captured } = makeVisual();
     visual.update({ dataViews: [dataView(["MTD", "QTD", "YTD"])] });
