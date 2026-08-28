@@ -43,8 +43,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 - Support document link: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/blob/main/SUPPORT.md
 
 **Technical configuration page:**
-- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.3.0.0.pbiviz`
-  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.3.0.0.pbiviz`)
+- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.4.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.4.0.0.pbiviz`)
 - Sample PBIX: `store/pill-toggle-slicer-sample.pbix` - must open offline with no external
   connections, embed its own sample data, and use this exact visual version.
 
@@ -55,8 +55,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
    line so it pastes without re-wrapping.
 
 ```text
-Pill Toggle Slicer 1.3.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
-Supersedes 1.0.0.0, reviewed 26 August 2026.
+Pill Toggle Slicer 1.4.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
+Supersedes 1.3.0.0, submitted 27 August 2026.
 
 SOURCE AND BUILD
 Repository: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer
@@ -69,7 +69,10 @@ RESPONSE TO THE REVIEW OF 26 AUGUST 2026
 1180.2.2.2 tool tips - fixed. Hovering a pill shows the bound field's name and the pill's value through the host tooltip service, plus a line stating whether clicking will filter or clear.
 1180.2.3 sample file - fixed. The .pbiviz and the visual embedded in the sample .pbix are both 1.3.0.0. The previous submission held packages built from two different versions in the two slots.
 
-ALSO IN THIS VERSION
+NEW IN 1.4.0.0
+Scroll bars are now explicitly styled (scrollbar-width/scrollbar-color plus ::-webkit-scrollbar), so a persistent thin bar with a visible track renders whenever content overflows, even on hosts whose overlay scrollbars paint nothing until scrolled (WebView2 with Windows' "automatically hide scroll bars" default). Under high contrast the scrollbar takes its colours from the host palette. A new Wrap long labels toggle (Format pane, Shape) breaks a long label onto further lines inside its pill instead of widening it.
+
+CARRIED OVER FROM 1.3.0.0
 The Format pane gains a font family picker, an unselected pill background, a border colour and a corner radius; those parts of the slicer previously could not be themed. Numeric settings are range-checked, so an out-of-range value falls back to its default rather than rendering an unusable slicer.
 
 HOST BEHAVIOUR AND ACCESSIBILITY
@@ -82,9 +85,12 @@ SECURITY AND PRIVACY
 No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 25 unit tests pass.
 
 SAMPLE FILE
-pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.3.0.0, matching the submitted .pbiviz. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
+pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.4.0.0, matching the .pbiviz above. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
 ```
 
-**Pre-publish checks - all passed; submitted to Partner Center 27 Aug 2026 (v1.3.0.0):** npm audit 0 vulnerabilities; eslint
-clean; unit tests pass; certification audit found no external requests; logo 300x300 and
-screenshot 1366x768 within size limits; main and certification branches identical.
+**Pre-publish checks - passed 28 Aug 2026 (v1.4.0.0), not submitted:** npm audit 0
+vulnerabilities; eslint clean; 25 unit tests pass; certification audit found no external
+requests. The 27 Aug 2026 submission (v1.3.0.0) is still in review; the `certification`
+branch stays at 1.3.0.0 until that completes. Before any 1.4.0.0 submission: open
+`store/pill-toggle-slicer-sample.pbix` once in Power BI Desktop to confirm it renders,
+upload both slots together, and push `main:certification`.

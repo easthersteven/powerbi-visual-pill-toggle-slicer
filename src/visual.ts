@@ -46,6 +46,7 @@ export class Visual implements IVisual {
     private lastBorderRadius = 6;
     private lastEnableDefault = false;
     private lastDefaultValue = "";
+    private lastWrapText = false;
 
     constructor(options: VisualConstructorOptions) {
         this.host = options.host;
@@ -109,11 +110,15 @@ export class Visual implements IVisual {
             const borderRadius = size(o, "borderRadius", 6, 0, 40);
             const enableDefault = (o?.["enableDefault"] as boolean) ?? false;
             const defaultValue = (o?.["defaultValue"] as string) ?? "";
+            const wrapText = o?.["wrapText"] === true;
             this.lastFontSize = fontSize;
             this.lastFontFamily = fontFamily;
             this.lastBorderRadius = borderRadius;
+            this.lastWrapText = wrapText;
             // Font family applies to the whole slicer so every pill shares one typeface.
             this.root.style.fontFamily = fontFamily;
+            // Wrap mode: long labels break inside their pill instead of widening it.
+            this.root.classList.toggle("wrap", wrapText);
             // High contrast mode: colours come from the host palette, and the selected pill is
             // inverted so selection stays visible in a two-colour theme.
             if (this.colorPalette?.isHighContrast === true) {
@@ -122,8 +127,14 @@ export class Visual implements IVisual {
                 selColor = fore; selText = back; baseColor = fore;
                 unselectedBg = back; borderColor = fore;
                 this.root.style.background = back;
+                // The scrollbar follows the palette too, so the scroll affordance required
+                // by policy 1180.2.2 stays visible under an accessibility theme.
+                this.root.style.setProperty("--pill-scrollbar-thumb", fore);
+                this.root.style.setProperty("--pill-scrollbar-track", back);
             } else {
                 this.root.style.background = "";
+                this.root.style.removeProperty("--pill-scrollbar-thumb");
+                this.root.style.removeProperty("--pill-scrollbar-track");
             }
 
             this.lastSel = selColor; this.lastSelText = selText; this.lastBase = baseColor;
@@ -244,9 +255,13 @@ export class Visual implements IVisual {
                 },
                 {
                     uid: "pillShapeCard", displayName: "Shape",
-                    groups: [{ uid: "pillShapeGroup", displayName: "Shape", slices: [
-                        this.numSlice("pillRadiusSlice", "Corner radius", "borderRadius", this.lastBorderRadius, 0, 40, "px")
-                    ] }]
+                    groups: [{ uid: "pillShapeGroup", displayName: "Shape", slices: ([
+                        this.numSlice("pillRadiusSlice", "Corner radius", "borderRadius", this.lastBorderRadius, 0, 40, "px"),
+                        {
+                            uid: "pillWrapTextSlice", displayName: "Wrap long labels",
+                            control: { type: powerbi.visuals.FormattingComponent.ToggleSwitch, properties: { descriptor: { objectName: "pill", propertyName: "wrapText" }, value: this.lastWrapText } }
+                        }
+                    ] as powerbi.visuals.FormattingSlice[]) }]
                 },
                 {
                     uid: "pillDefaultCard", displayName: "Default",

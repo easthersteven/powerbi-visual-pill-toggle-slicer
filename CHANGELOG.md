@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.4.0.0 (2026-08-28)
+
+Built on main while the 1.3.0.0 review is in flight; not yet submitted. Pre-empts the
+resize finding raised against Accent KPI Card on 27 August 2026, which this visual shares
+the mechanics of.
+
+- **Visible scroll bars.** The root was already `overflow: auto`, but on hosts with overlay
+  scrollbars (WebView2 with Windows' "automatically hide scroll bars" default - Power BI
+  Desktop) the bar occupies no layout space and paints nothing until the user scrolls, so a
+  shrunken slicer looked clipped with no scroll bars. The scrollbar is now explicitly
+  styled (standard `scrollbar-width`/`scrollbar-color`, plus `::-webkit-scrollbar` for
+  older WebView2 hosts), which opts out of overlay rendering: a thin bar with a visible
+  track renders whenever content overflows. Under high contrast the thumb and track follow
+  the host palette.
+- **Wrap long labels (Format pane > Shape).** Off by default (a long label widens its pill
+  and the row wraps or scrolls). Turned on, the label breaks onto further lines inside its
+  pill instead.
+
 ## 1.3.0.0 (2026-08-27)
 
 Adds the text and shape controls the slicer was missing.

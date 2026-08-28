@@ -112,6 +112,11 @@
                     "type": {
                         "numeric": true
                     }
+                },
+                "wrapText": {
+                    "type": {
+                        "bool": true
+                    }
                 }
             }
         }
