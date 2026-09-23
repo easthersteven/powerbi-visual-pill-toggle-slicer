@@ -22,6 +22,17 @@
           "type": "BaseTheme"
         }
       ]
+    },
+    {
+      "name": "pillToggleSlicer17CF177366264F91B44C2C53979DB313",
+      "type": "CustomVisual",
+      "items": [
+        {
+          "name": "pillToggleSlicer17CF177366264F91B44C2C53979DB313.pbiviz.json",
+          "path": "pillToggleSlicer17CF177366264F91B44C2C53979DB313.pbiviz.json",
+          "type": "CustomVisualMetadata"
+        }
+      ]
     }
   ],
   "settings": {
