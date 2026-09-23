@@ -65,6 +65,29 @@
               {
                 "textRuns": [
                   {
+                    "value": "Justify and wrapping",
+                    "textStyle": {
+                      "fontSize": "13pt",
+                      "fontWeight": "bold",
+                      "color": "#1F908C"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Shape > Justify sits the pills left, centre or right. Wrap pills onto new rows (on by default) lets a narrow visual flow them onto further rows; turn it off to keep one row that scrolls sideways. Wrap long labels breaks text inside a pill instead of widening it.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "color": "#333333"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
                     "value": "Avoid",
                     "textStyle": {
                       "fontSize": "13pt",

@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/1.0.0/schema.json",
   "name": "vzChart",
   "position": {
     "x": 40,
     "y": 240,
     "z": 0,
-    "height": 340,
     "width": 560,
+    "height": 340,
     "tabOrder": 0
   },
   "visual": {
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "Sales.Region",
-              "nativeQueryRef": "Region",
-              "active": true
+              "nativeQueryRef": "Region"
             }
           ]
         },
