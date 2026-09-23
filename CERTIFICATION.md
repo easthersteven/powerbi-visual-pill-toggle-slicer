@@ -109,7 +109,9 @@ asserts that, so it cannot regress silently.
 
 ## Current state (23 September 2026)
 
-**Submitted 27 August 2026 at 1.3.0.0. Awaiting review outcome.**
+**1.4.0.0 is the version AppSource serves for this GUID** (verified 23 September 2026: Desktop's
+WebView2 cache holds `https://pbivisuals.powerbi.com/<guid>.1.4.0.0.<hash>.pbiviz.json`, and that URL
+returns a package whose manifest says 1.4.0.0). Earlier notes here calling 1.4.0.0 unsubmitted were wrong.
 
 **1.5.0.0 is built ahead on `main`, not submitted.** It adds an opt-in Always show default toggle
 (Format pane > Default): a configured default the bound field has no rows for is rendered as a
@@ -119,7 +121,7 @@ returned from `getFormattingModel` and covered by the pane-coverage test. `store
 the 1.5.0.0 package and its reviewer notes fold the unsubmitted 1.4.0.0 changes in under a
 "carried over" heading. **`main` and `certification` are pushed together at 1.5.0.0.**
 
-**1.4.0.0 was built on `main` on 28 August 2026 and never submitted;** 1.5.0.0 supersedes it. It pre-empts the resize finding the
+**1.4.0.0 was built on `main` on 28 August 2026 and is now live on AppSource;** 1.5.0.0 supersedes it. It pre-empts the resize finding the
 reviewer raised against Accent KPI Card on 27 August 2026 (1180.2.2: overlay scrollbars on
 WebView2 paint nothing, so a shrunken visual looks clipped) by styling the scrollbars so a
 visible bar renders whenever content overflows, and adds a Wrap long labels toggle (Format
@@ -141,10 +143,16 @@ certification on Review and publish.
 import-mode with inline sample data, so it opens offline with no data sources, connectors or
 credentials.
 
-**Sample file (current, 1.5.0.0):** the working copy was last saved from Desktop at 1.4.0.0; on
-23 September 2026 its two embedded visual parts (`package.json` and the `.pbiviz.json` resource)
-were replaced from the 1.5.0.0 `dist/` build, byte-identical to the package, with every other
-zip part and the entry order preserved. Open it once in Desktop and re-save before uploading.
+**Sample file (current, 1.5.0.0):** saved from Power BI Desktop on 23 September 2026 after opening
+the PBIP project and importing the 1.5.0.0 package through the Visualizations pane. The embedded
+resource is byte-identical to the `pbiviz package --certification-audit` build in `dist/`; a plain
+`pbiviz package` minifies differently and will not match, so always package with that flag.
+
+**Desktop shows the AppSource version, not the embedded one.** Once a GUID is published, Desktop
+loads that GUID from `pbivisuals.powerbi.com` and ignores the package embedded in the report, so About
+reads 1.4.0.0 while the file embeds 1.5.0.0. Verify the sample by reading the .pbix, not by the About
+dialog. To exercise a new build in Desktop, import the throwaway-GUID copy from `dist-dev/` (README,
+"Testing a new build"); the sample itself must keep the real GUID.
 
 **Verified at 1.5.0.0 (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 42 tests
 passing at 99% statement coverage; `pbiviz package --certification-audit` reports no external

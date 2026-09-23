@@ -56,7 +56,7 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 
 ```text
 Pill Toggle Slicer 1.5.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
-Supersedes 1.3.0.0, submitted 27 August 2026. 1.4.0.0 was built but never submitted; its changes are included below.
+Supersedes 1.4.0.0, which is the version AppSource currently serves for this GUID (verified 23 September 2026 against pbivisuals.powerbi.com).
 
 SOURCE AND BUILD
 Repository: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer
@@ -72,7 +72,7 @@ RESPONSE TO THE REVIEW OF 26 AUGUST 2026
 NEW IN 1.5.0.0
 A new Always show default toggle (Format pane, Default; off by default). A configured default value that the bound field currently has no rows for was ignored by design, so the slicer loaded unselected whenever the data lagged (an offset column whose 0 is the current, still-empty period). Turned on, that default is still rendered as a pill with a dashed border and a tooltip noting the data has no rows for it, and is applied as the filter, coerced to the column's type from the host's type descriptor so a numeric column is filtered with a number. Clicking it clears the filter as before. No new data access, privileges or external requests.
 
-CARRIED OVER FROM 1.4.0.0 (built, not submitted)
+INCLUDED SINCE 1.4.0.0
 The sandbox styles the element the visual renders into with an ID-selector overflow:hidden rule that outweighs any class rule, so the slicer's overflow:auto never took effect inside Power BI Desktop; overflow:auto is now set as an inline style, which host stylesheet rules cannot override. Scroll bars are also explicitly styled with ::-webkit-scrollbar rules, so a persistent thin bar with a visible track renders whenever content overflows, even on hosts whose overlay scrollbars paint nothing until scrolled (WebView2 with Windows' "automatically hide scroll bars" default); the standard scrollbar-width/scrollbar-color properties are served to Firefox only, where those rules do not exist. The pill container is centred with auto margins rather than align-items, so when the rows are taller than the visual the overflow starts at the top and every row stays reachable by scrolling. A configured default value is validated before it is applied - an unmatched default (a typo, or a stale setting after the bound field changed) is ignored instead of filtering the report to nothing, and the filter carries the column's raw typed value so numeric and date columns filter correctly. Tooltips also show from a tap on touch devices. Under high contrast the scrollbar takes its colours from the host palette. A new Wrap long labels toggle (Format pane, Shape) breaks a long label onto further lines inside its pill instead of widening it.
 
 CARRIED OVER FROM 1.3.0.0
@@ -94,7 +94,12 @@ pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inli
 **Pre-publish checks - passed 23 Sep 2026 (v1.5.0.0), not submitted:** npm audit 0
 vulnerabilities; eslint clean; 42 unit tests pass at 99% statement coverage; certification
 audit found no external requests. `main` and `certification` are pushed together at
-1.5.0.0 for the offer update. The sample .pbix embeds 1.5.0.0 (the two embedded visual parts
-were replaced from `dist/`, byte-identical to the package). Before submitting: open
-`store/pill-toggle-slicer-sample.pbix` once in Power BI Desktop to confirm it renders and
-re-save it, then upload both slots together.
+1.5.0.0 for the offer update. The sample .pbix was saved from Power BI Desktop on 23 Sep
+2026 with the 1.5.0.0 package imported; its embedded resource is byte-identical to the
+`--certification-audit` build in `dist/` (a plain `pbiviz package` minifies differently, so
+always build with that flag). Upload both slots together.
+
+Note when checking the sample in Desktop: because 1.4.0.0 is live on AppSource under the
+same GUID, Desktop swaps in the AppSource copy at load time and About reports 1.4.0.0 even
+though the file embeds 1.5.0.0. That is Power BI behaviour, not a packaging fault - verify
+the embedded version by reading the .pbix, and test new builds via `dist-dev/` (see README).

@@ -41,6 +41,23 @@ npm install
 npm run package
 ```
 
+### Testing a new build in Power BI Desktop
+
+Once a visual is published, Power BI loads that GUID from AppSource and silently replaces any
+package imported from a file, so importing a newer `.pbiviz` still shows the AppSource version
+in About. To try a build before it is published, package it under a throwaway GUID and import
+that instead:
+
+```
+sed -i 's/"guid": "pillToggleSlicer17CF/"guid": "pillToggleSlicerDEV17CF/' pbiviz.json
+npx pbiviz package && git checkout pbiviz.json
+mkdir -p dist-dev && mv dist/pillToggleSlicerDEV*.pbiviz dist-dev/
+```
+
+Import the file from `dist-dev/`. It appears as a separate visual in the Visualizations pane and
+is never swapped for the AppSource copy. The sample report for certification must keep the real
+GUID, and the package you submit must be built with `npx pbiviz package --certification-audit`.
+
 The packaged visual is written to `dist/*.pbiviz` and can be imported into Power BI Desktop or the Power BI service.
 
 For development with live reload:
