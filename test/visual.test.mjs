@@ -268,3 +268,77 @@ test("out-of-range sizes from a hand-edited theme fall back to the defaults", ()
     assert.equal(pill.style.fontSize, "11px");
     assert.equal(pill.style.borderRadius, "6px");
 });
+
+// ---- Always show default (Format pane > Default) -----------------------------------
+
+test("an absent default is still ignored unless Always show default is on", () => {
+    const { visual, element, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "0" } };
+    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: [] });
+    assert.equal(captured.filters.length, 0);
+    assert.equal(element.querySelectorAll("button.pill").length, 3);
+});
+
+test("Always show default renders the missing value as a pill, in order, and applies it typed", () => {
+    const { visual, element, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
+    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: [] });
+    const pills = [...element.querySelectorAll("button.pill")];
+    assert.deepEqual(pills.map((p) => p.textContent), ["0", "1", "2", "3"]);
+    assert.ok(pills[0].classList.contains("sel"), "the absent default is selected");
+    assert.ok(pills[0].classList.contains("absent"), "the absent default is marked as such");
+    assert.equal(pills.filter((p) => p.classList.contains("absent")).length, 1);
+    assert.equal(captured.filters.length, 1);
+    assert.strictEqual(captured.filters[0].filter.values[0], 0, "a numeric column is filtered with a number");
+    assert.equal(captured.filters[0].action, 0); // FilterAction.merge
+});
+
+test("Always show default uses the host type descriptor when the field has no values of its own type", () => {
+    const { visual, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
+    const dv = dataView([1, 2], objects);
+    dv.categorical.categories[0].source.type = { text: true };
+    visual.update({ dataViews: [dv], jsonFilters: [] });
+    assert.strictEqual(captured.filters[0].filter.values[0], "0", "the host says text, so the filter carries text");
+});
+
+test("Always show default does not add a pill when the default is present in the data", () => {
+    const { visual, element, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "2", showDefaultWhenAbsent: true } };
+    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: [] });
+    assert.equal(element.querySelectorAll("button.pill").length, 3);
+    assert.equal(element.querySelectorAll("button.pill.absent").length, 0);
+    assert.strictEqual(captured.filters[0].filter.values[0], 2);
+});
+
+test("the absent default stays selected once its filter is applied and clicking it clears", () => {
+    const { visual, element, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
+    const applied = [{ target: { table: "Options", column: "Choice" }, values: [0] }];
+    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: applied });
+    assert.equal(captured.filters.length, 0, "the default must not re-fire while its filter is active");
+    const pill = element.querySelector("button.pill.absent");
+    assert.ok(pill.classList.contains("sel"));
+    pill.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
+    assert.equal(captured.filters.length, 1);
+    assert.equal(captured.filters[0].action, 1); // FilterAction.remove
+});
+
+test("the absent default's tooltip says the data has no rows for it", () => {
+    const { visual, element, captured } = makeVisual();
+    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
+    visual.update({ dataViews: [dataView([1, 2], objects)], jsonFilters: [] });
+    const pill = element.querySelector("button.pill.absent");
+    pill.dispatchEvent(new dom.window.MouseEvent("mousemove", { clientX: 5, clientY: 5, bubbles: true }));
+    assert.equal(captured.tooltips[0].dataItems.length, 3);
+    assert.match(captured.tooltips[0].dataItems[2].value, /no rows/);
+    const other = element.querySelectorAll("button.pill")[1];
+    other.dispatchEvent(new dom.window.MouseEvent("mousemove", { clientX: 5, clientY: 5, bubbles: true }));
+    assert.equal(captured.tooltips[1].dataItems.length, 2, "ordinary pills keep the two-line tooltip");
+});
+
+test("the absent default has a dashed border so it reads as configured, not delivered", async () => {
+    const { readFileSync } = await import("node:fs");
+    const less = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8");
+    assert.match(less, /\.pill\.absent\s*\{\s*border-style:\s*dashed/);
+});

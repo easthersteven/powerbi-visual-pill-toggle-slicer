@@ -10,6 +10,7 @@ Because it applies a real filter (not a highlight), it works well with disconnec
 - Single-select behaviour: selecting a pill replaces the previous selection.
 - Click the active pill to clear the selection.
 - Optional default selection (Format pane, "Default" card): when enabled, the configured value is applied automatically whenever no filter is active.
+- Optional "Always show default": a default the field currently has no rows for (an offset column whose 0 disappears while the current period is empty, say) is still rendered as a pill with a dashed border and applied as the filter.
 - Format pane controls for font size, selected pill colour, selected text colour, and unselected text colour.
 - Context menu support (right-click).
 
@@ -29,6 +30,7 @@ Because it applies a real filter (not a highlight), it works well with disconnec
 | Colours | Unselected text | Text colour of inactive pills. |
 | Default | Enable default | Turns the default selection on. |
 | Default | Default value | The value applied when no filter is active. Must exactly match one of the field's values. |
+| Default | Always show default | Off by default. When on, a default value the field has no rows for is still rendered (dashed border) and applied, typed to match the column. The page then shows no data for that selection until rows arrive. When off, an unmatched default is ignored. |
 
 ## Building from source
 

@@ -17,7 +17,7 @@ Key features:
 
 - **One click filtering.** Each pill applies a basic filter on the bound field. Selection is single select by design, so the report always reflects exactly one choice.
 - **Compact.** A full slicer in a strip a single line tall. Pills wrap onto extra lines if the visual is narrow.
-- **Configurable default.** Choose which value is selected when the report opens, so viewers always land on the intended view.
+- **Configurable default.** Choose which value is selected when the report opens, so viewers always land on the intended view. An optional Always show default setting keeps that default in place even when the data has no rows for it yet.
 - **Styleable.** Font family and size, selected and unselected pill colours, text colours, border colour and corner radius are all set in the Format pane, so the pills match your report theme.
 - **Certified friendly.** No external services, no data leaves your report, and the visual supports the Rendering Events API and context menus.
 
@@ -43,8 +43,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 - Support document link: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/blob/main/SUPPORT.md
 
 **Technical configuration page:**
-- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.4.0.0.pbiviz`
-  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.4.0.0.pbiviz`)
+- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.5.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.5.0.0.pbiviz`)
 - Sample PBIX: `store/pill-toggle-slicer-sample.pbix` - must open offline with no external
   connections, embed its own sample data, and use this exact visual version.
 
@@ -55,8 +55,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
    line so it pastes without re-wrapping.
 
 ```text
-Pill Toggle Slicer 1.4.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
-Supersedes 1.3.0.0, submitted 27 August 2026.
+Pill Toggle Slicer 1.5.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
+Supersedes 1.3.0.0, submitted 27 August 2026. 1.4.0.0 was built but never submitted; its changes are included below.
 
 SOURCE AND BUILD
 Repository: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer
@@ -69,7 +69,10 @@ RESPONSE TO THE REVIEW OF 26 AUGUST 2026
 1180.2.2.2 tool tips - fixed. Hovering a pill shows the bound field's name and the pill's value through the host tooltip service, plus a line stating whether clicking will filter or clear.
 1180.2.3 sample file - fixed. The .pbiviz and the visual embedded in the sample .pbix are both 1.3.0.0. The previous submission held packages built from two different versions in the two slots.
 
-NEW IN 1.4.0.0
+NEW IN 1.5.0.0
+A new Always show default toggle (Format pane, Default; off by default). A configured default value that the bound field currently has no rows for was ignored by design, so the slicer loaded unselected whenever the data lagged (an offset column whose 0 is the current, still-empty period). Turned on, that default is still rendered as a pill with a dashed border and a tooltip noting the data has no rows for it, and is applied as the filter, coerced to the column's type from the host's type descriptor so a numeric column is filtered with a number. Clicking it clears the filter as before. No new data access, privileges or external requests.
+
+CARRIED OVER FROM 1.4.0.0 (built, not submitted)
 The sandbox styles the element the visual renders into with an ID-selector overflow:hidden rule that outweighs any class rule, so the slicer's overflow:auto never took effect inside Power BI Desktop; overflow:auto is now set as an inline style, which host stylesheet rules cannot override. Scroll bars are also explicitly styled with ::-webkit-scrollbar rules, so a persistent thin bar with a visible track renders whenever content overflows, even on hosts whose overlay scrollbars paint nothing until scrolled (WebView2 with Windows' "automatically hide scroll bars" default); the standard scrollbar-width/scrollbar-color properties are served to Firefox only, where those rules do not exist. The pill container is centred with auto margins rather than align-items, so when the rows are taller than the visual the overflow starts at the top and every row stays reachable by scrolling. A configured default value is validated before it is applied - an unmatched default (a typo, or a stale setting after the bound field changed) is ignored instead of filtering the report to nothing, and the filter carries the column's raw typed value so numeric and date columns filter correctly. Tooltips also show from a tap on touch devices. Under high contrast the scrollbar takes its colours from the host palette. A new Wrap long labels toggle (Format pane, Shape) breaks a long label onto further lines inside its pill instead of widening it.
 
 CARRIED OVER FROM 1.3.0.0
@@ -82,14 +85,16 @@ NOTE ON THE BOOKMARKS FEATURE CHECK
 pbiviz package --certification-audit lists Bookmarks as a recommended feature. The check looks for registerOnSelectCallback, which applies to selection-based visuals. This is a filter-based slicer: it restores its state from options.jsonFilters, the documented pattern for filter visuals, so bookmarks and cross-report filter state work correctly. A no-op callback would silence the check without adding behaviour, so it was not added.
 
 SECURITY AND PRIVACY
-No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 29 unit tests pass.
+No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 42 unit tests pass.
 
 SAMPLE FILE
-pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.4.0.0, matching the .pbiviz above. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
+pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.5.0.0, matching the .pbiviz above. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
 ```
 
-**Pre-publish checks - passed 28 Aug 2026 (v1.4.0.0), not submitted:** npm audit 0
-vulnerabilities; eslint clean; 29 unit tests pass; certification audit found no external
-requests. `main` and `certification` are pushed together at 1.4.0.0 for the offer
-update. Before submitting: open `store/pill-toggle-slicer-sample.pbix` once in Power BI
-Desktop to confirm it renders, then upload both slots together.
+**Pre-publish checks - passed 23 Sep 2026 (v1.5.0.0), not submitted:** npm audit 0
+vulnerabilities; eslint clean; 42 unit tests pass at 99% statement coverage; certification
+audit found no external requests. `main` and `certification` are pushed together at
+1.5.0.0 for the offer update. The sample .pbix embeds 1.5.0.0 (the two embedded visual parts
+were replaced from `dist/`, byte-identical to the package). Before submitting: open
+`store/pill-toggle-slicer-sample.pbix` once in Power BI Desktop to confirm it renders and
+re-save it, then upload both slots together.

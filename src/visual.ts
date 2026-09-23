@@ -2,7 +2,7 @@
 
 import powerbi from "powerbi-visuals-api";
 import "./../style/visual.less";
-import { parseTarget, findSelectedValue, basicFilter } from "./logic";
+import { parseTarget, findSelectedValue, basicFilter, coerceToFieldType, insertIndex } from "./logic";
 
 import VisualConstructorOptions = powerbi.extensibility.visual.VisualConstructorOptions;
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;
@@ -46,6 +46,7 @@ export class Visual implements IVisual {
     private lastBorderRadius = 6;
     private lastEnableDefault = false;
     private lastDefaultValue = "";
+    private lastShowDefaultWhenAbsent = false;
     private lastWrapText = false;
 
     constructor(options: VisualConstructorOptions) {
@@ -115,6 +116,7 @@ export class Visual implements IVisual {
             const borderRadius = size(o, "borderRadius", 6, 0, 40);
             const enableDefault = (o?.["enableDefault"] as boolean) ?? false;
             const defaultValue = (o?.["defaultValue"] as string) ?? "";
+            const showDefaultWhenAbsent = o?.["showDefaultWhenAbsent"] === true;
             const wrapText = o?.["wrapText"] === true;
             this.lastFontSize = fontSize;
             this.lastFontFamily = fontFamily;
@@ -145,6 +147,7 @@ export class Visual implements IVisual {
             this.lastSel = selColor; this.lastSelText = selText; this.lastBase = baseColor;
             this.lastUnselectedBg = unselectedBg; this.lastBorderColor = borderColor;
             this.lastEnableDefault = enableDefault; this.lastDefaultValue = defaultValue;
+            this.lastShowDefaultWhenAbsent = showDefaultWhenAbsent;
 
             // Resolve the bound table/column (e.g. "Options.Choice") so a real Basic filter can be
             // applied. A slicer must FILTER, not highlight, so that measures using SELECTEDVALUE()
@@ -160,19 +163,38 @@ export class Visual implements IVisual {
             // bound field's actual values - the matching RAW value is what goes into the filter, so a
             // numeric or date column filters with its own type, and a typo (or a stale default after the
             // field changes) is ignored instead of filtering the whole report down to nothing.
-            if (enableDefault && defaultValue && selectedVal == null && target.column) {
-                const match = cat.values.find((v) => String(v ?? "") === defaultValue);
+            //
+            // ALWAYS SHOW DEFAULT (opt-in on top of that): when the data has no row for the default -
+            // typically an offset column such as "months ago" whose 0 vanishes while the current period
+            // has no data yet - the default is still rendered as a pill and applied, coerced to the
+            // column's type. The page then shows no data for it, which is the author's explicit choice.
+            let absentDefault: unknown = undefined;
+            if (enableDefault && defaultValue && target.column) {
+                const coerced = coerceToFieldType(defaultValue, cat.values, cat.source.type);
+                const match = cat.values.find((v) => v === coerced || String(v ?? "") === defaultValue);
                 if (match !== undefined && match !== null) {
-                    this.host.applyJsonFilter(basicFilter(target, match) as unknown as powerbi.IFilter, "general", "filter", FilterAction.merge);
-                    selectedVal = String(match);
+                    if (selectedVal == null) {
+                        this.host.applyJsonFilter(basicFilter(target, match) as unknown as powerbi.IFilter, "general", "filter", FilterAction.merge);
+                        selectedVal = String(match);
+                    }
+                } else if (showDefaultWhenAbsent) {
+                    absentDefault = coerced;
+                    if (selectedVal == null) {
+                        this.host.applyJsonFilter(basicFilter(target, coerced) as unknown as powerbi.IFilter, "general", "filter", FilterAction.merge);
+                        selectedVal = String(coerced);
+                    }
                 }
             }
 
+            const values = cat.values.slice() as unknown[];
+            if (absentDefault !== undefined) values.splice(insertIndex(values, absentDefault), 0, absentDefault);
+
             const wrap = el("div", "pill-toggle");
-            cat.values.forEach((v) => {
+            values.forEach((v) => {
                 const val = String(v ?? "");
                 const isSel = selectedVal != null && val === selectedVal;
-                const pill = el("button", "pill" + (isSel ? " sel" : ""));
+                const isAbsent = absentDefault !== undefined && v === absentDefault;
+                const pill = el("button", "pill" + (isSel ? " sel" : "") + (isAbsent ? " absent" : ""));
                 pill.textContent = val;
                 pill.style.fontSize = fontSize + "px";
                 pill.style.borderRadius = borderRadius + "px";
@@ -194,7 +216,10 @@ export class Visual implements IVisual {
                             value: isSel
                                 ? this.text("Tooltip_Selected", "selected - click to clear")
                                 : this.text("Tooltip_Unselected", "click to filter the page"),
-                        }],
+                        }, ...(isAbsent ? [{
+                            displayName: this.text("Tooltip_DataLabel", "Data"),
+                            value: this.text("Tooltip_Absent", "no rows for this value yet"),
+                        }] : [])],
                         identities: [],
                     });
                 };
@@ -288,6 +313,11 @@ export class Visual implements IVisual {
                         {
                             uid: "pillDefaultValue", displayName: "Default value",
                             control: { type: powerbi.visuals.FormattingComponent.TextInput, properties: { descriptor: { objectName: "pill", propertyName: "defaultValue" }, value: this.lastDefaultValue, placeholder: "" } }
+                        },
+                        {
+                            uid: "pillShowDefaultWhenAbsent", displayName: "Always show default",
+                            description: "Render and apply the default even when the field has no rows for it. The page then shows no data for that selection.",
+                            control: { type: powerbi.visuals.FormattingComponent.ToggleSwitch, properties: { descriptor: { objectName: "pill", propertyName: "showDefaultWhenAbsent" }, value: this.lastShowDefaultWhenAbsent } }
                         }
                     ] as powerbi.visuals.FormattingSlice[]) }]
                 }

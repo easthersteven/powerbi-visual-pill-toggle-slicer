@@ -83,6 +83,11 @@
                         "text": true
                     }
                 },
+                "showDefaultWhenAbsent": {
+                    "type": {
+                        "bool": true
+                    }
+                },
                 "fontFamily": {
                     "type": {
                         "formatting": {

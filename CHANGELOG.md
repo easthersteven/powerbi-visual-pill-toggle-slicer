@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.5.0.0 (2026-09-23)
+
+Built on main; not yet submitted.
+
+- **Always show default (Format pane > Default).** Off by default. A configured default that
+  the bound field currently has no rows for - typically an offset column such as "months
+  ago" whose 0 vanishes while the current period has no data yet - was, by design, ignored,
+  so the slicer loaded with nothing selected. Turned on, the default is still rendered as a
+  pill (dashed border, tooltip notes the data has no rows for it), inserted in sequence when
+  the values arrive sorted, and applied as the filter. The filter value is coerced to the
+  column's type from the host's type descriptor (or, failing that, from the delivered
+  values), so a numeric column is filtered with a number. Clicking the pill clears the
+  filter as usual, and the default then reapplies. The page shows no data for that selection
+  until rows arrive, which is the author's explicit choice.
+- A default value with surrounding whitespace now matches a numeric column (it is trimmed
+  during type coercion); text columns still require an exact match.
+
 ## 1.4.0.0 (2026-08-28)
 
 Built on main while the 1.3.0.0 review is in flight; not yet submitted. Pre-empts the

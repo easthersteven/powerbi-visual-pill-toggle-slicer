@@ -107,11 +107,19 @@ hardcoded in `style/visual.less`.
 All 10 declared properties are now returned from `getFormattingModel`, and a unit test
 asserts that, so it cannot regress silently.
 
-## Current state (28 August 2026)
+## Current state (23 September 2026)
 
 **Submitted 27 August 2026 at 1.3.0.0. Awaiting review outcome.**
 
-**1.4.0.0 is built ahead on `main`, not submitted.** It pre-empts the resize finding the
+**1.5.0.0 is built ahead on `main`, not submitted.** It adds an opt-in Always show default toggle
+(Format pane > Default): a configured default the bound field has no rows for is rendered as a
+dashed pill and applied as the filter, typed from the host's type descriptor. Off by default, so
+existing reports keep the 1.4.0.0 behaviour (an unmatched default is ignored). The new property is
+returned from `getFormattingModel` and covered by the pane-coverage test. `store/listing.md` names
+the 1.5.0.0 package and its reviewer notes fold the unsubmitted 1.4.0.0 changes in under a
+"carried over" heading. **`main` and `certification` are pushed together at 1.5.0.0.**
+
+**1.4.0.0 was built on `main` on 28 August 2026 and never submitted;** 1.5.0.0 supersedes it. It pre-empts the resize finding the
 reviewer raised against Accent KPI Card on 27 August 2026 (1180.2.2: overlay scrollbars on
 WebView2 paint nothing, so a shrunken visual looks clipped) by styling the scrollbars so a
 visible bar renders whenever content overflows, and adds a Wrap long labels toggle (Format
@@ -122,20 +130,24 @@ Desktop - corrects the scrollbar styling (the standard properties are
 Firefox-gated - on Chromium they restyle the invisible overlay bar), fixes the centred
 pill container clipping its top rows unreachably when the visual is short, validates the
 configured default value before applying it (an unmatched default is ignored, and the
-filter carries the column's raw typed value), and adds touch tooltips. The sample .pbix
-embeds 1.4.0.0. **`main` and `certification` are pushed together at 1.4.0.0** (the offer
-is being updated); upload both slots together when submitting.
+filter carries the column's raw typed value), and adds touch tooltips.
 
 **What went up:** `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.3.0.0.pbiviz` and `store/pill-toggle-slicer-sample.pbix`, uploaded together on the Technical
 configuration page, with the reviewer notes from `store/listing.md` pasted into Notes for
 certification on Review and publish.
 
-**Sample file:** re-saved from Power BI Desktop on 27 August 2026. It embeds 1.3.0.0, matching
-the submitted package - JS, CSS and capabilities byte-identical. The model is import-mode
-with inline sample data, so it opens offline with no data sources, connectors or credentials.
+**Sample file (submitted 1.3.0.0):** re-saved from Power BI Desktop on 27 August 2026. It embedded
+1.3.0.0, matching the submitted package - JS, CSS and capabilities byte-identical. The model is
+import-mode with inline sample data, so it opens offline with no data sources, connectors or
+credentials.
 
-**Verified at this version:** npm audit 0 vulnerabilities; ESLint clean; 25 tests passing
-at 99% statement coverage; `pbiviz package --certification-audit` reports no external
+**Sample file (current, 1.5.0.0):** the working copy was last saved from Desktop at 1.4.0.0; on
+23 September 2026 its two embedded visual parts (`package.json` and the `.pbiviz.json` resource)
+were replaced from the 1.5.0.0 `dist/` build, byte-identical to the package, with every other
+zip part and the entry order preserved. Open it once in Desktop and re-save before uploading.
+
+**Verified at 1.5.0.0 (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 42 tests
+passing at 99% statement coverage; `pbiviz package --certification-audit` reports no external
 requests. It also lists 9 optional features - the informational extras described above,
 not failures.
 
