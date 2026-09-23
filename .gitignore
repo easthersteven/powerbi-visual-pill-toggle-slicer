@@ -12,4 +12,3 @@ store/*.SemanticModel/cache.abf
 
 # Windows reserved name; created accidentally by tools writing to /dev/null
 nul
-dist-dev/

@@ -45,20 +45,21 @@ npm run package
 
 ### Testing a new build in Power BI Desktop
 
-Once a visual is published, Power BI loads that GUID from AppSource and silently replaces any
-package imported from a file, so importing a newer `.pbiviz` still shows the AppSource version
-in About. To try a build before it is published, package it under a throwaway GUID and import
-that instead:
+Once a visual is published, Power BI loads the latest AppSource version of that GUID even when
+you import a `.pbiviz` from a file, so About keeps showing the published version. Microsoft's
+documented way to test a newer build is Developer mode, keeping the real GUID
+([Testing submissions](https://learn.microsoft.com/en-us/power-bi/developer/visuals/submission-testing#testing-a-new-version-of-a-published-visual)):
 
-```
-sed -i 's/"guid": "pillToggleSlicer17CF/"guid": "pillToggleSlicerDEV17CF/' pbiviz.json
-npx pbiviz package && git checkout pbiviz.json
-mkdir -p dist-dev && mv dist/pillToggleSlicerDEV*.pbiviz dist-dev/
-```
+1. Open the report or project in Power BI Desktop.
+2. File > Options and settings > Options > CURRENT FILE > Report settings > Developer Mode >
+   **Turn on developer mode for this session**.
+3. Visualizations pane > ... > Import a visual from a file > the `.pbiviz` in `dist/`.
+4. Check About: it now reports the imported version. Save As `.pbix`.
 
-Import the file from `dist-dev/`. It appears as a separate visual in the Visualizations pane and
-is never swapped for the AppSource copy. The sample report for certification must keep the real
-GUID, and the package you submit must be built with `npx pbiviz package --certification-audit`.
+Developer mode lasts one Desktop session, so repeat step 2 each time you open the file to check
+it. Do not change the GUID for testing; Microsoft explicitly warns against it.
+
+The package you submit must be built with `npx pbiviz package --certification-audit`.
 
 The packaged visual is written to `dist/*.pbiviz` and can be imported into Power BI Desktop or the Power BI service.
 

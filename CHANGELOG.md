@@ -14,9 +14,9 @@ this GUID.
   scrolls sideways.
 - Dev-tooling audit findings fixed (`npm audit fix`, dev dependencies only; no change to the
   packaged visual).
-- README gains a "Testing a new build" recipe: once a GUID is published, Power BI Desktop
-  loads the AppSource copy and ignores a package imported from a file, so a build under a
-  throwaway GUID is the only way to see it in Desktop before it ships.
+- README gains a "Testing a new build" section: once a GUID is published, Power BI Desktop
+  loads the AppSource copy even when a package is imported from a file; Microsoft's documented
+  override is Desktop's Developer mode for the session, with the GUID unchanged.
 
 ## 1.4.0.0 (2026-08-28)
 

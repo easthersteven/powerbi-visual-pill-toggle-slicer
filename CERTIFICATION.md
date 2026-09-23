@@ -148,15 +148,15 @@ embedded visual parts were then replaced with the final 1.5.0.0 build. The embed
 resource is byte-identical to the `pbiviz package --certification-audit` build in `dist/`; a plain
 `pbiviz package` minifies differently and will not match, so always package with that flag.
 
-**How a report chooses AppSource over the embedded package.** A PBIR report.json lists AppSource
-visuals under `publicCustomVisuals` and file-imported ones as a `resourcePackages` entry of type
-`CustomVisual` (with the package under `Report/CustomVisuals/<guid>/`). Opening the PBIP project
-without that folder made Desktop resolve the GUID from AppSource and write a `publicCustomVisuals`
-reference, so About read 1.4.0.0 while the file embedded 1.5.0.0. The sample .pbix now carries the
-`CustomVisual` resource package and no `publicCustomVisuals` entry, so Desktop renders the embedded
-1.5.0.0 build (verified in the file on 23 September 2026). When re-saving from Desktop, remove the
-visual from the Visualizations pane and import the .pbiviz from file before saving. `dist-dev/`
-holds a throwaway-GUID copy for ad-hoc testing (README, "Testing a new build").
+**Testing a published GUID.** Per Microsoft's submission-testing page, "Power BI loads the latest
+published version of the visual from AppSource, even if you import the visual from a local file";
+the documented override is Desktop's Developer mode (Options > Current file > Report settings >
+Developer Mode > Turn on developer mode for this session), then import the .pbiviz from file, with
+the GUID unchanged. No file-side arrangement of the sample (embedded package, resourcePackages,
+publicCustomVisuals) changes what Desktop renders; the sample only has to embed the submitted
+version (1180.2.3), which it does. To produce the sample: open the PBIP, turn on Developer mode,
+import `dist/...1.5.0.0.pbiviz`, confirm About reads 1.5.0.0, Save As over
+`store/pill-toggle-slicer-sample.pbix`.
 
 **Verified at 1.5.0.0 (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 36 tests
 passing at 99% statement coverage; `pbiviz package --certification-audit` reports no external
