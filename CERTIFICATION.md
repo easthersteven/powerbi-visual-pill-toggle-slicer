@@ -113,13 +113,12 @@ asserts that, so it cannot regress silently.
 WebView2 cache holds `https://pbivisuals.powerbi.com/<guid>.1.4.0.0.<hash>.pbiviz.json`, and that URL
 returns a package whose manifest says 1.4.0.0). Earlier notes here calling 1.4.0.0 unsubmitted were wrong.
 
-**1.5.0.0 is built ahead on `main`, not submitted.** It adds an opt-in Always show default toggle
-(Format pane > Default): a configured default the bound field has no rows for is rendered as a
-dashed pill and applied as the filter, typed from the host's type descriptor. Off by default, so
-existing reports keep the 1.4.0.0 behaviour (an unmatched default is ignored). The new property is
-returned from `getFormattingModel` and covered by the pane-coverage test. `store/listing.md` names
-the 1.5.0.0 package and its reviewer notes fold the unsubmitted 1.4.0.0 changes in under a
-"carried over" heading. **`main` and `certification` are pushed together at 1.5.0.0.**
+**1.5.0.0 is built ahead on `main`, not submitted.** It adds two Shape settings: Justify (left,
+centre, right - an alignment group in the Format pane) and Wrap pills onto new rows (on by
+default; off keeps one row that scrolls sideways). Both keep 1180.2.2 intact: horizontal
+placement uses collapsing auto margins, so an overflowing row never pushes its first pills
+off-canvas unreachably, and the root still scrolls in both axes. Both properties are returned
+from `getFormattingModel` and covered by the pane-coverage test. **`main` and `certification` are pushed together at 1.5.0.0.**
 
 **1.4.0.0 was built on `main` on 28 August 2026 and is now live on AppSource;** 1.5.0.0 supersedes it. It pre-empts the resize finding the
 reviewer raised against Accent KPI Card on 27 August 2026 (1180.2.2: overlay scrollbars on
@@ -144,7 +143,8 @@ import-mode with inline sample data, so it opens offline with no data sources, c
 credentials.
 
 **Sample file (current, 1.5.0.0):** saved from Power BI Desktop on 23 September 2026 after opening
-the PBIP project and importing the 1.5.0.0 package through the Visualizations pane. The embedded
+the PBIP project and importing the 1.5.0.0 package through the Visualizations pane; the two
+embedded visual parts were then replaced with the final 1.5.0.0 build. The embedded
 resource is byte-identical to the `pbiviz package --certification-audit` build in `dist/`; a plain
 `pbiviz package` minifies differently and will not match, so always package with that flag.
 
@@ -154,7 +154,7 @@ reads 1.4.0.0 while the file embeds 1.5.0.0. Verify the sample by reading the .p
 dialog. To exercise a new build in Desktop, import the throwaway-GUID copy from `dist-dev/` (README,
 "Testing a new build"); the sample itself must keep the real GUID.
 
-**Verified at 1.5.0.0 (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 42 tests
+**Verified at 1.5.0.0 (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 36 tests
 passing at 99% statement coverage; `pbiviz package --certification-audit` reports no external
 requests. It also lists 9 optional features - the informational extras described above,
 not failures.

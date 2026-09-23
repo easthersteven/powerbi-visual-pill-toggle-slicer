@@ -2,20 +2,21 @@
 
 ## 1.5.0.0 (2026-09-23)
 
-Built on main; not yet submitted.
+Built on main; not yet submitted. 1.4.0.0 is the version AppSource currently serves for
+this GUID.
 
-- **Always show default (Format pane > Default).** Off by default. A configured default that
-  the bound field currently has no rows for - typically an offset column such as "months
-  ago" whose 0 vanishes while the current period has no data yet - was, by design, ignored,
-  so the slicer loaded with nothing selected. Turned on, the default is still rendered as a
-  pill (dashed border, tooltip notes the data has no rows for it), inserted in sequence when
-  the values arrive sorted, and applied as the filter. The filter value is coerced to the
-  column's type from the host's type descriptor (or, failing that, from the delivered
-  values), so a numeric column is filtered with a number. Clicking the pill clears the
-  filter as usual, and the default then reapplies. The page shows no data for that selection
-  until rows arrive, which is the author's explicit choice.
-- A default value with surrounding whitespace now matches a numeric column (it is trimmed
-  during type coercion); text columns still require an exact match.
+- **Justify (Format pane > Shape).** Sit the pills left (default), centre or right. The
+  placement uses collapsing auto margins, so when the row is wider than the visual the
+  margins fall to zero and the first pills stay reachable by scrolling (policy 1180.2.2);
+  a plain `justify-content: flex-end` would push them off the left edge unreachably.
+- **Wrap pills onto new rows (Format pane > Shape).** On by default, which is the previous
+  behaviour: a narrow visual flows the pills onto further rows. Off keeps a single row that
+  scrolls sideways.
+- Dev-tooling audit findings fixed (`npm audit fix`, dev dependencies only; no change to the
+  packaged visual).
+- README gains a "Testing a new build" recipe: once a GUID is published, Power BI Desktop
+  loads the AppSource copy and ignores a package imported from a file, so a build under a
+  throwaway GUID is the only way to see it in Desktop before it ships.
 
 ## 1.4.0.0 (2026-08-28)
 

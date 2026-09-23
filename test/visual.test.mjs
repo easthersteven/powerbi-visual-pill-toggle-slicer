@@ -269,76 +269,52 @@ test("out-of-range sizes from a hand-edited theme fall back to the defaults", ()
     assert.equal(pill.style.borderRadius, "6px");
 });
 
-// ---- Always show default (Format pane > Default) -----------------------------------
+// ---- Justify and row wrapping (Format pane > Shape) --------------------------------
 
-test("an absent default is still ignored unless Always show default is on", () => {
-    const { visual, element, captured } = makeVisual();
-    const objects = { pill: { enableDefault: true, defaultValue: "0" } };
-    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: [] });
-    assert.equal(captured.filters.length, 0);
-    assert.equal(element.querySelectorAll("button.pill").length, 3);
+test("pills sit left and wrap onto new rows by default", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView(["A", "B"])], jsonFilters: [] });
+    const row = element.querySelector(".pill-toggle");
+    assert.equal(row.classList.contains("justify-center"), false);
+    assert.equal(row.classList.contains("justify-right"), false);
+    assert.equal(row.classList.contains("nowrap"), false);
 });
 
-test("Always show default renders the missing value as a pill, in order, and applies it typed", () => {
-    const { visual, element, captured } = makeVisual();
-    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
-    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: [] });
-    const pills = [...element.querySelectorAll("button.pill")];
-    assert.deepEqual(pills.map((p) => p.textContent), ["0", "1", "2", "3"]);
-    assert.ok(pills[0].classList.contains("sel"), "the absent default is selected");
-    assert.ok(pills[0].classList.contains("absent"), "the absent default is marked as such");
-    assert.equal(pills.filter((p) => p.classList.contains("absent")).length, 1);
-    assert.equal(captured.filters.length, 1);
-    assert.strictEqual(captured.filters[0].filter.values[0], 0, "a numeric column is filtered with a number");
-    assert.equal(captured.filters[0].action, 0); // FilterAction.merge
+test("Justify centre and right add the alignment class", () => {
+    for (const justify of ["center", "right"]) {
+        const { visual, element } = makeVisual();
+        visual.update({ dataViews: [dataView(["A", "B"], { pill: { justify } })], jsonFilters: [] });
+        assert.ok(element.querySelector(".pill-toggle").classList.contains("justify-" + justify), justify);
+    }
 });
 
-test("Always show default uses the host type descriptor when the field has no values of its own type", () => {
-    const { visual, captured } = makeVisual();
-    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
-    const dv = dataView([1, 2], objects);
-    dv.categorical.categories[0].source.type = { text: true };
-    visual.update({ dataViews: [dv], jsonFilters: [] });
-    assert.strictEqual(captured.filters[0].filter.values[0], "0", "the host says text, so the filter carries text");
+test("an unexpected justify value from a hand-edited theme falls back to left", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView(["A"], { pill: { justify: "sideways" } })], jsonFilters: [] });
+    assert.equal(element.querySelector(".pill-toggle").className, "pill-toggle");
 });
 
-test("Always show default does not add a pill when the default is present in the data", () => {
-    const { visual, element, captured } = makeVisual();
-    const objects = { pill: { enableDefault: true, defaultValue: "2", showDefaultWhenAbsent: true } };
-    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: [] });
-    assert.equal(element.querySelectorAll("button.pill").length, 3);
-    assert.equal(element.querySelectorAll("button.pill.absent").length, 0);
-    assert.strictEqual(captured.filters[0].filter.values[0], 2);
+test("turning off Wrap pills onto new rows keeps a single row", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView(["A", "B"], { pill: { wrapPills: false } })], jsonFilters: [] });
+    assert.ok(element.querySelector(".pill-toggle").classList.contains("nowrap"));
 });
 
-test("the absent default stays selected once its filter is applied and clicking it clears", () => {
-    const { visual, element, captured } = makeVisual();
-    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
-    const applied = [{ target: { table: "Options", column: "Choice" }, values: [0] }];
-    visual.update({ dataViews: [dataView([1, 2, 3], objects)], jsonFilters: applied });
-    assert.equal(captured.filters.length, 0, "the default must not re-fire while its filter is active");
-    const pill = element.querySelector("button.pill.absent");
-    assert.ok(pill.classList.contains("sel"));
-    pill.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
-    assert.equal(captured.filters.length, 1);
-    assert.equal(captured.filters[0].action, 1); // FilterAction.remove
-});
-
-test("the absent default's tooltip says the data has no rows for it", () => {
-    const { visual, element, captured } = makeVisual();
-    const objects = { pill: { enableDefault: true, defaultValue: "0", showDefaultWhenAbsent: true } };
-    visual.update({ dataViews: [dataView([1, 2], objects)], jsonFilters: [] });
-    const pill = element.querySelector("button.pill.absent");
-    pill.dispatchEvent(new dom.window.MouseEvent("mousemove", { clientX: 5, clientY: 5, bubbles: true }));
-    assert.equal(captured.tooltips[0].dataItems.length, 3);
-    assert.match(captured.tooltips[0].dataItems[2].value, /no rows/);
-    const other = element.querySelectorAll("button.pill")[1];
-    other.dispatchEvent(new dom.window.MouseEvent("mousemove", { clientX: 5, clientY: 5, bubbles: true }));
-    assert.equal(captured.tooltips[1].dataItems.length, 2, "ordinary pills keep the two-line tooltip");
-});
-
-test("the absent default has a dashed border so it reads as configured, not delivered", async () => {
+test("justified rows use collapsing auto margins so overflow stays reachable (1180.2.2)", async () => {
     const { readFileSync } = await import("node:fs");
-    const less = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8");
-    assert.match(less, /\.pill\.absent\s*\{\s*border-style:\s*dashed/);
+    const less = readFileSync(new URL("../style/visual.less", import.meta.url), "utf8").replace(/\/\/[^\n]*/g, "");
+    assert.match(less, /\.pill-toggle\.justify-center\s*\{[^}]*margin:\s*auto;/);
+    assert.match(less, /\.pill-toggle\.justify-right\s*\{[^}]*margin:\s*auto 0 auto auto;/);
+    assert.match(less, /\.pill-toggle\.nowrap\s*\{\s*flex-wrap:\s*nowrap;/);
+    assert.doesNotMatch(less, /\.pill-toggle\.justify-right\s*\{[^}]*margin-left:\s*0/);
+});
+
+test("the Shape card exposes Justify as an alignment group and both wrap toggles", () => {
+    const { visual } = makeVisual();
+    const shape = visual.getFormattingModel().cards.find((c) => c.displayName === "Shape");
+    const names = shape.groups[0].slices.map((s) => s.displayName);
+    assert.deepEqual(names, ["Corner radius", "Justify", "Wrap pills onto new rows", "Wrap long labels"]);
+    const justify = shape.groups[0].slices.find((s) => s.displayName === "Justify");
+    assert.equal(justify.control.properties.value, "left");
+    assert.equal(justify.control.properties.descriptor.propertyName, "justify");
 });

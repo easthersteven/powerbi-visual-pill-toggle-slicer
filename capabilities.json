@@ -83,11 +83,6 @@
                         "text": true
                     }
                 },
-                "showDefaultWhenAbsent": {
-                    "type": {
-                        "bool": true
-                    }
-                },
                 "fontFamily": {
                     "type": {
                         "formatting": {
@@ -119,6 +114,18 @@
                     }
                 },
                 "wrapText": {
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "justify": {
+                    "type": {
+                        "formatting": {
+                            "alignment": true
+                        }
+                    }
+                },
+                "wrapPills": {
                     "type": {
                         "bool": true
                     }

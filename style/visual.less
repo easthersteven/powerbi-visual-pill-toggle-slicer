@@ -56,6 +56,14 @@
         // vertical centring that stays scrollable - see the align-items note on the root
         margin: auto 0;
     }
+    // Justify (Format pane > Shape). Horizontal placement uses the same auto-margin trick as
+    // the vertical centring: the margins absorb free space and collapse to zero when the row
+    // overflows, so the first pills always stay reachable by scrolling (1180.2.2).
+    // justify-content only settles the wrapped rows inside the container.
+    .pill-toggle.justify-center { justify-content: center; margin: auto; }
+    .pill-toggle.justify-right { justify-content: flex-end; margin: auto 0 auto auto; }
+    // Wrap pills onto new rows turned off: a single row that scrolls sideways in the root.
+    .pill-toggle.nowrap { flex-wrap: nowrap; }
 
     .pill {
         padding: 4px 12px;
@@ -71,9 +79,6 @@
     }
     .pill:hover { border-color: #1F908C; }
     .pill.sel { font-weight: 600; }
-    // Always show default (Format pane > Default): a default the data has no rows for is
-    // still rendered; the dashed border marks it as present by configuration, not by data.
-    .pill.absent { border-style: dashed; }
 
     // Wrap mode (Format pane > Shape > Wrap long labels): a long label breaks onto further
     // lines inside its pill instead of widening it past the visual (1180.2.2 stays covered

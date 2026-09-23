@@ -10,7 +10,7 @@ Because it applies a real filter (not a highlight), it works well with disconnec
 - Single-select behaviour: selecting a pill replaces the previous selection.
 - Click the active pill to clear the selection.
 - Optional default selection (Format pane, "Default" card): when enabled, the configured value is applied automatically whenever no filter is active.
-- Optional "Always show default": a default the field currently has no rows for (an offset column whose 0 disappears while the current period is empty, say) is still rendered as a pill with a dashed border and applied as the filter.
+- Justify (Format pane, "Shape" card): sit the pills left, centre or right. A "Wrap pills onto new rows" toggle (on by default) decides whether a narrow visual flows the pills onto further rows or keeps one row that scrolls sideways.
 - Format pane controls for font size, selected pill colour, selected text colour, and unselected text colour.
 - Context menu support (right-click).
 
@@ -28,9 +28,11 @@ Because it applies a real filter (not a highlight), it works well with disconnec
 | Colours | Selected pill | Background and border colour of the active pill. |
 | Colours | Selected text | Text colour of the active pill. |
 | Colours | Unselected text | Text colour of inactive pills. |
+| Shape | Justify | Left, centre or right placement of the pills across the visual. Default left. |
+| Shape | Wrap pills onto new rows | On by default. Off keeps every pill on one row, which scrolls sideways when the visual is narrower than the row. |
+| Shape | Wrap long labels | Off by default. On breaks a long label onto further lines inside its pill instead of widening it. |
 | Default | Enable default | Turns the default selection on. |
 | Default | Default value | The value applied when no filter is active. Must exactly match one of the field's values. |
-| Default | Always show default | Off by default. When on, a default value the field has no rows for is still rendered (dashed border) and applied, typed to match the column. The page then shows no data for that selection until rows arrive. When off, an unmatched default is ignored. |
 
 ## Building from source
 
