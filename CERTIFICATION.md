@@ -148,11 +148,15 @@ embedded visual parts were then replaced with the final 1.5.0.0 build. The embed
 resource is byte-identical to the `pbiviz package --certification-audit` build in `dist/`; a plain
 `pbiviz package` minifies differently and will not match, so always package with that flag.
 
-**Desktop shows the AppSource version, not the embedded one.** Once a GUID is published, Desktop
-loads that GUID from `pbivisuals.powerbi.com` and ignores the package embedded in the report, so About
-reads 1.4.0.0 while the file embeds 1.5.0.0. Verify the sample by reading the .pbix, not by the About
-dialog. To exercise a new build in Desktop, import the throwaway-GUID copy from `dist-dev/` (README,
-"Testing a new build"); the sample itself must keep the real GUID.
+**How a report chooses AppSource over the embedded package.** A PBIR report.json lists AppSource
+visuals under `publicCustomVisuals` and file-imported ones as a `resourcePackages` entry of type
+`CustomVisual` (with the package under `Report/CustomVisuals/<guid>/`). Opening the PBIP project
+without that folder made Desktop resolve the GUID from AppSource and write a `publicCustomVisuals`
+reference, so About read 1.4.0.0 while the file embedded 1.5.0.0. The sample .pbix now carries the
+`CustomVisual` resource package and no `publicCustomVisuals` entry, so Desktop renders the embedded
+1.5.0.0 build (verified in the file on 23 September 2026). When re-saving from Desktop, remove the
+visual from the Visualizations pane and import the .pbiviz from file before saving. `dist-dev/`
+holds a throwaway-GUID copy for ad-hoc testing (README, "Testing a new build").
 
 **Verified at 1.5.0.0 (23 September 2026):** npm audit 0 vulnerabilities; ESLint clean; 36 tests
 passing at 99% statement coverage; `pbiviz package --certification-audit` reports no external

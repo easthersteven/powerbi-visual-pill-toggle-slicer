@@ -100,7 +100,9 @@ audit found no external requests. `main` and `certification` are pushed together
 the embedded resource is byte-identical to the `--certification-audit` build in `dist/` (a plain `pbiviz package` minifies differently, so
 always build with that flag). Upload both slots together.
 
-Note when checking the sample in Desktop: because 1.4.0.0 is live on AppSource under the
-same GUID, Desktop swaps in the AppSource copy at load time and About reports 1.4.0.0 even
-though the file embeds 1.5.0.0. That is Power BI behaviour, not a packaging fault - verify
-the embedded version by reading the .pbix, and test new builds via `dist-dev/` (see README).
+The sample references the visual as an embedded CustomVisual resource package (no
+`publicCustomVisuals` entry in its report.json), so Desktop renders the embedded 1.5.0.0
+build rather than the AppSource 1.4.0.0 copy. If the visual is ever re-added by opening the
+PBIP project without the package, Desktop re-resolves the GUID from AppSource and writes a
+`publicCustomVisuals` reference; remove the visual from the Visualizations pane and import
+the .pbiviz from file before saving, or strip that entry from report.json inside the .pbix.

@@ -11,9 +11,6 @@
       "type": "SharedResources"
     }
   },
-  "publicCustomVisuals": [
-    "pillToggleSlicer17CF177366264F91B44C2C53979DB313"
-  ],
   "resourcePackages": [
     {
       "name": "SharedResources",
