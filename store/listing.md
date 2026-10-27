@@ -57,7 +57,7 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 
 ```text
 Pill Toggle Slicer 1.6.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
-Supersedes 1.5.0.0, submitted 23 September 2026.
+Supersedes 1.5.0.0, the version AppSource currently serves for this GUID (verified 27 October 2026 against pbivisuals.powerbi.com).
 
 SOURCE AND BUILD
 Repository: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer

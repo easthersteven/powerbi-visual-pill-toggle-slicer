@@ -124,8 +124,9 @@ state below).
 ## Current state (27 October 2026)
 
 **1.6.0.0 is built, verified and pushed to `main` and `certification` together; not yet
-submitted.** 1.5.0.0 was submitted to Partner Center on 23 September 2026; its review outcome
-is not recorded here - check Partner Center before uploading.
+submitted.** **1.5.0.0 (submitted 23 September 2026) is live on AppSource** (verified 27 October
+2026: the CDN serves `pbivisuals.powerbi.com/<guid>.1.5.0.0.<hash>.pbiviz.json` with a 1.5.0.0
+manifest, and the 1.4.0.0 URL now returns 404), so 1.6.0.0 is the correct next version.
 
 **To upload, together, on the Technical configuration page:**
 `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz` and
