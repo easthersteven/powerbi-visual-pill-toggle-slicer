@@ -5,6 +5,7 @@
 **Submitted:** 24 August 2026 (v1.0.0.0)
 **Review completed:** 26 August 2026 - **Attention needed, resubmission required**
 **Resubmitted:** 27 August 2026 (v1.3.0.0) - awaiting review outcome
+**Resubmitted:** 27 October 2026 (v1.6.0.0) - awaiting review outcome
 
 ## Findings (26 August 2026 review)
 
@@ -123,12 +124,12 @@ state below).
 
 ## Current state (27 October 2026)
 
-**1.6.0.0 is built, verified and pushed to `main` and `certification` together; not yet
-submitted.** **1.5.0.0 (submitted 23 September 2026) is live on AppSource** (verified 27 October
+**1.6.0.0 is built, verified and pushed to `main` and `certification` together; submitted
+27 October 2026, awaiting review outcome.** **1.5.0.0 (submitted 23 September 2026) is live on AppSource** (verified 27 October
 2026: the CDN serves `pbivisuals.powerbi.com/<guid>.1.5.0.0.<hash>.pbiviz.json` with a 1.5.0.0
 manifest, and the 1.4.0.0 URL now returns 404), so 1.6.0.0 is the correct next version.
 
-**To upload, together, on the Technical configuration page:**
+**What went up, together, on the Technical configuration page (27 October 2026):**
 `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz` and
 `store/pill-toggle-slicer-sample.pbix`, with the reviewer notes from `store/listing.md` pasted
 into Notes for certification on Review and publish.
