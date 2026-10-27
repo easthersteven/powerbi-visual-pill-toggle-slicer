@@ -82,7 +82,7 @@ in "Testing submissions of Power BI custom visuals".
 | Landing page when nothing is bound | **Fixed** - explains what to bind |
 | Localization | **Fixed** - `stringResources` and the host localization manager |
 | Bookmarks | Pass - state is restored from `options.jsonFilters`, the documented pattern for a filter-based slicer. The build tool still lists Bookmarks because it looks for `registerOnSelectCallback`, which applies to selection-based visuals; a no-op callback would silence the tool without adding behaviour, so it was not added. |
-| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.3.0.0, byte-identical to `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.3.0.0.pbiviz` |
+| Sample .pbix embeds the submitted visual version (1180.2.3) | **Fixed** - sample embeds 1.6.0.0, byte-identical to `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz` |
 | No external services; `privileges: []` | Pass - certification audit reports no external requests |
 
 `pbiviz package --certification-audit` reports no external requests. It also lists 9
@@ -107,19 +107,46 @@ hardcoded in `style/visual.less`.
 All 10 declared properties are now returned from `getFormattingModel`, and a unit test
 asserts that, so it cannot regress silently.
 
-## Branch `perf/faster-interaction` - 1.6.0.0, not submitted
+## 1.6.0.0 - immediate pill highlight (27 October 2026)
 
 Clicking a pill now restyles the pills immediately (clicked pill selected, the rest unselected; clicking the selected pill clears it), then applies the filter exactly as before. Power BI's next `update()` redraws from the applied filter, so the final state still comes from the host. The optimistic restyle runs after the Edit interactions guard, so a visual with interactions turned off still does nothing on click.
 
 Policy impact: filter behaviour (Basic filter, merge/remove actions, default value handling) is unchanged; resize, tooltips, keyboard, high contrast and rendering events are untouched. No new privileges, network access or capabilities.
 
-**Not yet built or verified as a release.** `main` and `certification` are still at 1.5.0.0 and their sample .pbix and `dist/` package are unchanged. Before merging or submitting 1.6.0.0:
-1. `npm install`, `npm run lint`, `npm test` (the jsdom visual tests were not run when this branch was written).
-2. `npx pbiviz package --certification-audit` - expect no external requests.
-3. Re-save `store/pill-toggle-slicer-sample.pbix` from Power BI Desktop embedding the new `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz`, so the two upload slots carry the same version (1180.2.3).
-4. Push `main` and `certification` together at 1.6.0.0 and upload both slots together.
+**Built and verified 27 October 2026** (merged to `main`, pushed with `certification`): `npm audit`
+0 vulnerabilities after `npm audit fix` on dev dependencies (bundle byte-identical before and
+after); ESLint clean; 38 jsdom tests pass at 99% statement coverage, including two new ones that
+check the immediate styling matches a host-driven render of the same filter and one asserting
+no restyle when Edit interactions are off; `pbiviz package --certification-audit` reports no
+external requests. The sample .pbix and the PBIP project embed the 1.6.0.0 build (see Current
+state below).
 
-## Current state (23 September 2026)
+## Current state (27 October 2026)
+
+**1.6.0.0 is built, verified and pushed to `main` and `certification` together; not yet
+submitted.** 1.5.0.0 was submitted to Partner Center on 23 September 2026; its review outcome
+is not recorded here - check Partner Center before uploading.
+
+**To upload, together, on the Technical configuration page:**
+`dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz` and
+`store/pill-toggle-slicer-sample.pbix`, with the reviewer notes from `store/listing.md` pasted
+into Notes for certification on Review and publish.
+
+**Sample file:** the Power BI Desktop save of 23 September 2026 (the one submitted with 1.5.0.0)
+with its two embedded visual parts (`Report/CustomVisuals/<guid>/package.json` and
+`resources/<guid>.pbiviz.json`) replaced by the 1.6.0.0 `--certification-audit` build,
+byte-identical to `dist/`. Nothing under `Report/definition/` was touched. `report.json` lists
+the GUID under `publicCustomVisuals`, which Desktop writes on save for any GUID that is live on
+AppSource; 1180.2.3 is about the embedded package, which is the 1.6.0.0 build. The PBIP
+project's CustomVisuals folder carries the same 1.6.0.0 parts. Open the .pbix once in Desktop
+before uploading (Developer mode for the session to see 1.6.0.0 rather than the AppSource copy).
+
+**Verified at 1.6.0.0 (27 October 2026):** npm audit 0 vulnerabilities; ESLint clean; 38 tests
+passing at 99% statement coverage; `pbiviz package --certification-audit` reports no external
+requests and lists only the informational optional features (Bookmarks: see the note in
+`store/listing.md`).
+
+## State at 23 September 2026
 
 **1.4.0.0 is the version AppSource serves for this GUID** (verified 23 September 2026: Desktop's
 WebView2 cache holds `https://pbivisuals.powerbi.com/<guid>.1.4.0.0.<hash>.pbiviz.json`, and that URL

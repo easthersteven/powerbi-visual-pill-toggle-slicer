@@ -44,8 +44,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
 - Support document link: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer/blob/main/SUPPORT.md
 
 **Technical configuration page:**
-- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.5.0.0.pbiviz`
-  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.5.0.0.pbiviz`)
+- PBIVIZ package: `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz`
+  (full path: `C:\Users\se518\powerbi-visuals\powerbi-visual-pill-toggle-slicer\dist\pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz`)
 - Sample PBIX: `store/pill-toggle-slicer-sample.pbix` - must open offline with no external
   connections, embed its own sample data, and use this exact visual version.
 
@@ -56,8 +56,8 @@ Use it wherever a row of pills reads better than a dropdown: month/quarter/year 
    line so it pastes without re-wrapping.
 
 ```text
-Pill Toggle Slicer 1.5.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
-Supersedes 1.4.0.0, which is the version AppSource currently serves for this GUID (verified 23 September 2026 against pbivisuals.powerbi.com).
+Pill Toggle Slicer 1.6.0.0 - Product ID 9ee18d59-7997-4d34-8562-da3d2c94a1b2
+Supersedes 1.5.0.0, submitted 23 September 2026.
 
 SOURCE AND BUILD
 Repository: https://github.com/easthersteven/powerbi-visual-pill-toggle-slicer
@@ -70,7 +70,10 @@ RESPONSE TO THE REVIEW OF 26 AUGUST 2026
 1180.2.2.2 tool tips - fixed. Hovering a pill shows the bound field's name and the pill's value through the host tooltip service, plus a line stating whether clicking will filter or clear.
 1180.2.3 sample file - fixed. The .pbiviz and the visual embedded in the sample .pbix are both 1.3.0.0. The previous submission held packages built from two different versions in the two slots.
 
-NEW IN 1.5.0.0
+NEW IN 1.6.0.0
+Clicking a pill now restyles the pills immediately (the clicked pill selected, the rest unselected; clicking the selected pill clears), then applies the filter exactly as before through applyJsonFilter. Power BI's next update() redraws the pills from the applied filter, so the final state always comes from the host; the immediate restyle only removes the moment on a heavy page where a click looked ignored while the page re-queried. It runs after the Edit interactions guard, so a slicer whose interactions are turned off still does nothing on click. No new data access, privileges or external requests; two new unit tests check that the immediate styling matches a host-driven render of the same filter.
+
+INCLUDED SINCE 1.5.0.0
 Two Shape settings. Justify places the pills left (default), centre or right; the placement uses collapsing auto margins so that when the row is wider than the visual the margins drop to zero and the first pills remain reachable by scrolling (1180.2.2). Wrap pills onto new rows (on by default, the previous behaviour) can be turned off to keep a single row that scrolls sideways. No new data access, privileges or external requests.
 
 INCLUDED SINCE 1.4.0.0
@@ -86,21 +89,25 @@ NOTE ON THE BOOKMARKS FEATURE CHECK
 pbiviz package --certification-audit lists Bookmarks as a recommended feature. The check looks for registerOnSelectCallback, which applies to selection-based visuals. This is a filter-based slicer: it restores its state from options.jsonFilters, the documented pattern for filter visuals, so bookmarks and cross-report filter state work correctly. A no-op callback would silence the check without adding behaviour, so it was not added.
 
 SECURITY AND PRIVACY
-No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 36 unit tests pass.
+No external services and no network calls of any kind; no data leaves the report. capabilities.json declares "privileges": []. pbiviz package --certification-audit reports no external requests. npm audit reports 0 vulnerabilities. 38 unit tests pass.
 
 SAMPLE FILE
-pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.5.0.0, matching the .pbiviz above. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
+pill-toggle-slicer-sample.pbix opens offline: the model is import-mode with inline sample data, with no data sources, connectors or credentials. It embeds visual version 1.6.0.0, matching the .pbiviz above. Page 1 puts the slicer above a native column chart so filtering is visible, with the default selection set to MTD - clearing the filter reapplies it. Page 2 documents the settings.
 ```
 
-**Pre-publish checks - passed 23 Sep 2026 (v1.5.0.0), not submitted:** npm audit 0
-vulnerabilities; eslint clean; 36 unit tests pass at 99% statement coverage; certification
-audit found no external requests. `main` and `certification` are pushed together at
-1.5.0.0 for the offer update. The sample .pbix was saved from Power BI Desktop on 23 Sep
-2026, and its two embedded visual parts were then replaced with the final 1.5.0.0 build, so
-the embedded resource is byte-identical to the `--certification-audit` build in `dist/` (a plain `pbiviz package` minifies differently, so
-always build with that flag). Upload both slots together.
+**Pre-publish checks - passed 27 Oct 2026 (v1.6.0.0), not submitted:** npm audit 0
+vulnerabilities (after `npm audit fix` on dev dependencies only - the built bundle is
+byte-identical before and after); eslint clean; 38 unit tests pass at 99% statement
+coverage; certification audit found no external requests. The sample .pbix is the Power BI
+Desktop save of 23 Sep 2026 (the one submitted with 1.5.0.0) with its two embedded visual
+parts replaced by the 1.6.0.0 `--certification-audit` build, so the embedded resource is
+byte-identical to `dist/` (a plain `pbiviz package` minifies differently, so always build
+with that flag); the PBIP project's CustomVisuals folder carries the same 1.6.0.0 parts.
+`main` and `certification` are pushed together at 1.6.0.0. Before submitting: open
+`store/pill-toggle-slicer-sample.pbix` once in Power BI Desktop to confirm it renders, then
+upload both slots together.
 
 Power BI renders the latest AppSource version of a published GUID even when a newer package is
-imported from a file (submission-testing documentation). To see 1.5.0.0 render rather than the
-AppSource 1.4.0.0, turn on Developer mode for the session in Desktop (Options > Current file >
+imported from a file (submission-testing documentation). To see 1.6.0.0 render rather than the
+AppSource copy, turn on Developer mode for the session in Desktop (Options > Current file >
 Report settings) before importing the .pbiviz; the GUID stays unchanged.

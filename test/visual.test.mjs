@@ -84,6 +84,38 @@ test("the filtered value renders as selected and clicking it removes the filter"
     assert.equal(captured.filters[0].action, 1); // FilterAction.remove
 });
 
+test("clicking a pill restyles the pills immediately, before the host re-queries", () => {
+    const { visual, element, captured } = makeVisual();
+    visual.update({ dataViews: [dataView(["A", "B"])], jsonFilters: [] });
+    const pills = element.querySelectorAll("button.pill");
+    pills[1].dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
+    assert.equal(captured.filters.length, 1, "the filter is still applied");
+    assert.equal(pills[1].classList.contains("sel"), true, "clicked pill shows as selected at once");
+    assert.equal(pills[0].classList.contains("sel"), false);
+    // the optimistic styling must match what a host-driven render of the same filter produces
+    const ref = makeVisual();
+    ref.visual.update({ dataViews: [dataView(["A", "B"])], jsonFilters: [{ target: { table: "Options", column: "Choice" }, values: ["B"] }] });
+    const refPills = ref.element.querySelectorAll("button.pill");
+    for (const i of [0, 1]) for (const prop of ["background", "color", "borderColor"]) {
+        assert.equal(pills[i].style[prop], refPills[i].style[prop], "pill " + i + " " + prop);
+    }
+});
+
+test("clicking the selected pill clears the styling immediately", () => {
+    const { visual, element, captured } = makeVisual();
+    visual.update({ dataViews: [dataView(["A", "B"])], jsonFilters: [{ target: { table: "Options", column: "Choice" }, values: ["B"] }] });
+    const pills = element.querySelectorAll("button.pill");
+    pills[1].dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
+    assert.equal(captured.filters[0].action, 1, "the filter is removed");
+    assert.equal(pills[1].classList.contains("sel"), false, "cleared at once");
+    const ref = makeVisual();
+    ref.visual.update({ dataViews: [dataView(["A", "B"])], jsonFilters: [] });
+    const refPills = ref.element.querySelectorAll("button.pill");
+    for (const i of [0, 1]) for (const prop of ["background", "color", "borderColor"]) {
+        assert.equal(pills[i].style[prop], refPills[i].style[prop], "pill " + i + " " + prop);
+    }
+});
+
 test("applies the default value when enabled and nothing is selected", () => {
     const { visual, element, captured } = makeVisual();
     const objects = { pill: { enableDefault: true, defaultValue: "A" } };
@@ -192,6 +224,7 @@ test("respects Edit interactions being turned off", () => {
     visual.update({ dataViews: [dataView(["MTD", "QTD"])] });
     element.querySelector(".pill").dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
     assert.equal(captured.filters.length, 0, "clicking must not filter when interactions are off");
+    assert.equal(element.querySelector(".pill").classList.contains("sel"), false, "and must not restyle either");
 });
 
 test("landing page explains the visual when no field is bound", () => {

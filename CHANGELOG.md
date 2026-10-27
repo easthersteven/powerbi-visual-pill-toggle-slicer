@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.6.0.0 (2026-10-27)
+
+Built on main; not yet submitted.
+
+- **The clicked pill highlights immediately.** Power BI only calls `update()` again once the
+  page has re-queried, which on a heavy page made a click feel ignored for a moment. The pills
+  are now restyled as soon as the click lands (clicked pill selected, the rest unselected;
+  clicking the selected pill clears), and the filter is applied exactly as before. The next
+  `update()` still redraws from the applied filter, so the final state always comes from the
+  host. The optimistic restyle sits behind the Edit interactions guard, so a visual with
+  interactions turned off still does nothing on click.
+
 ## 1.5.0.0 (2026-09-23)
 
 Built on main; not yet submitted. 1.4.0.0 is the version AppSource currently serves for
