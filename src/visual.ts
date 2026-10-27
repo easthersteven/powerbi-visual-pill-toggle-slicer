@@ -219,6 +219,16 @@ export class Visual implements IVisual {
                     ev.stopPropagation();
                     // Honour the report's Edit interactions setting.
                     if (!target.column || this.host.hostCapabilities?.allowInteractions === false) return;
+                    // Show the new state straight away. Power BI only calls update() again once
+                    // the page has re-queried, which on a heavy page makes the click feel ignored;
+                    // that update then redraws the pills from the applied filter as before.
+                    wrap.querySelectorAll<HTMLElement>("button.pill").forEach((b) => {
+                        const on = !isSel && b === pill;
+                        b.classList.toggle("sel", on);
+                        b.style.background = on ? selColor : unselectedBg;
+                        b.style.color = on ? selText : baseColor;
+                        b.style.borderColor = on ? selColor : borderColor;
+                    });
                     // click the active pill again to clear (back to the unfiltered state)
                     const action = isSel ? FilterAction.remove : FilterAction.merge;
                     this.host.applyJsonFilter(basicFilter(target, v) as unknown as powerbi.IFilter, "general", "filter", action);
