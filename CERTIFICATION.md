@@ -107,6 +107,18 @@ hardcoded in `style/visual.less`.
 All 10 declared properties are now returned from `getFormattingModel`, and a unit test
 asserts that, so it cannot regress silently.
 
+## Branch `perf/faster-interaction` - 1.6.0.0, not submitted
+
+Clicking a pill now restyles the pills immediately (clicked pill selected, the rest unselected; clicking the selected pill clears it), then applies the filter exactly as before. Power BI's next `update()` redraws from the applied filter, so the final state still comes from the host. The optimistic restyle runs after the Edit interactions guard, so a visual with interactions turned off still does nothing on click.
+
+Policy impact: filter behaviour (Basic filter, merge/remove actions, default value handling) is unchanged; resize, tooltips, keyboard, high contrast and rendering events are untouched. No new privileges, network access or capabilities.
+
+**Not yet built or verified as a release.** `main` and `certification` are still at 1.5.0.0 and their sample .pbix and `dist/` package are unchanged. Before merging or submitting 1.6.0.0:
+1. `npm install`, `npm run lint`, `npm test` (the jsdom visual tests were not run when this branch was written).
+2. `npx pbiviz package --certification-audit` - expect no external requests.
+3. Re-save `store/pill-toggle-slicer-sample.pbix` from Power BI Desktop embedding the new `dist/pillToggleSlicer17CF177366264F91B44C2C53979DB313.1.6.0.0.pbiviz`, so the two upload slots carry the same version (1180.2.3).
+4. Push `main` and `certification` together at 1.6.0.0 and upload both slots together.
+
 ## Current state (23 September 2026)
 
 **1.4.0.0 is the version AppSource serves for this GUID** (verified 23 September 2026: Desktop's
