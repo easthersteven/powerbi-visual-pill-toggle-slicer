@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0.0 (2026-11-20)
+
+Built on main; not yet submitted. Formatting only: with no new settings changed the slicer looks
+exactly as 1.6.0.0 does.
+
+- **Bold chosen pill can be switched off (Format pane > Shape).** The chosen pill's bold was fixed
+  in the stylesheet; off, every pill has the same weight, to match a report's own slicers.
+
 ## 1.6.0.0 (2026-10-27)
 
 Built on main; not yet submitted.

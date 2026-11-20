@@ -327,6 +327,14 @@ test("an unexpected justify value from a hand-edited theme falls back to left", 
     assert.equal(element.querySelector(".pill-toggle").className, "pill-toggle");
 });
 
+test("the chosen pill is bold unless Bold chosen pill is off", () => {
+    const { visual, element } = makeVisual();
+    visual.update({ dataViews: [dataView(["A", "B"], { pill: { selectedBold: false } })], jsonFilters: [] });
+    for (const b of element.querySelectorAll("button.pill")) assert.equal(b.style.fontWeight, "400");
+    visual.update({ dataViews: [dataView(["A", "B"])], jsonFilters: [] });
+    for (const b of element.querySelectorAll("button.pill")) assert.equal(b.style.fontWeight, "");
+});
+
 test("turning off Wrap pills onto new rows keeps a single row", () => {
     const { visual, element } = makeVisual();
     visual.update({ dataViews: [dataView(["A", "B"], { pill: { wrapPills: false } })], jsonFilters: [] });

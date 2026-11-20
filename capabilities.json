@@ -129,6 +129,11 @@
                     "type": {
                         "bool": true
                     }
+                },
+                "selectedBold": {
+                    "type": {
+                        "bool": true
+                    }
                 }
             }
         }

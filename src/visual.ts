@@ -49,6 +49,7 @@ export class Visual implements IVisual {
     private lastWrapText = false;
     private lastJustify = "left";
     private lastWrapPills = true;
+    private lastSelectedBold = true;
 
     constructor(options: VisualConstructorOptions) {
         this.host = options.host;
@@ -124,6 +125,9 @@ export class Visual implements IVisual {
             const justify = justifyRaw === "center" || justifyRaw === "right" ? justifyRaw : "left";
             // Wrap pills onto new rows (on by default); off keeps one row that scrolls sideways.
             const wrapPills = o?.["wrapPills"] !== false;
+            // The chosen pill in bold (on by default, the look the slicer has always had).
+            const selectedBold = o?.["selectedBold"] !== false;
+            this.lastSelectedBold = selectedBold;
             this.lastFontSize = fontSize;
             this.lastFontFamily = fontFamily;
             this.lastBorderRadius = borderRadius;
@@ -190,6 +194,7 @@ export class Visual implements IVisual {
                 pill.textContent = val;
                 pill.style.fontSize = fontSize + "px";
                 pill.style.borderRadius = borderRadius + "px";
+                if (!selectedBold) pill.style.fontWeight = "400";
                 if (isSel) { pill.style.background = selColor; pill.style.color = selText; pill.style.borderColor = selColor; }
                 else { pill.style.background = unselectedBg; pill.style.color = baseColor; pill.style.borderColor = borderColor; }
                 // Host tooltip on hover, naming the bound field (policy 1180.2.2.2).
@@ -305,6 +310,11 @@ export class Visual implements IVisual {
                             uid: "pillWrapPillsSlice", displayName: "Wrap pills onto new rows",
                             description: "On: pills flow onto further rows when the visual is narrow. Off: one row that scrolls sideways.",
                             control: { type: powerbi.visuals.FormattingComponent.ToggleSwitch, properties: { descriptor: { objectName: "pill", propertyName: "wrapPills" }, value: this.lastWrapPills } }
+                        },
+                        {
+                            uid: "pillSelectedBoldSlice", displayName: "Bold chosen pill",
+                            description: "On: the chosen pill's label is bold. Off: every pill has the same weight.",
+                            control: { type: powerbi.visuals.FormattingComponent.ToggleSwitch, properties: { descriptor: { objectName: "pill", propertyName: "selectedBold" }, value: this.lastSelectedBold } }
                         },
                         {
                             uid: "pillWrapTextSlice", displayName: "Wrap long labels",

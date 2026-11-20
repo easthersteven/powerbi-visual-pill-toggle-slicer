@@ -30,6 +30,7 @@ Because it applies a real filter (not a highlight), it works well with disconnec
 | Colours | Unselected text | Text colour of inactive pills. |
 | Shape | Justify | Left, centre or right placement of the pills across the visual. Default left. |
 | Shape | Wrap pills onto new rows | On by default. Off keeps every pill on one row, which scrolls sideways when the visual is narrower than the row. |
+| Shape | Bold chosen pill | On by default. Off gives every pill the same weight. |
 | Shape | Wrap long labels | Off by default. On breaks a long label onto further lines inside its pill instead of widening it. |
 | Default | Enable default | Turns the default selection on. |
 | Default | Default value | The value applied when no filter is active. Must exactly match one of the field's values. |
