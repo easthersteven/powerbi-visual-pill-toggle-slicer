@@ -350,11 +350,11 @@ test("justified rows use collapsing auto margins so overflow stays reachable (11
     assert.doesNotMatch(less, /\.pill-toggle\.justify-right\s*\{[^}]*margin-left:\s*0/);
 });
 
-test("the Shape card exposes Justify as an alignment group and both wrap toggles", () => {
+test("the Shape card exposes Justify as an alignment group, both wrap toggles and the bold toggle", () => {
     const { visual } = makeVisual();
     const shape = visual.getFormattingModel().cards.find((c) => c.displayName === "Shape");
     const names = shape.groups[0].slices.map((s) => s.displayName);
-    assert.deepEqual(names, ["Corner radius", "Justify", "Wrap pills onto new rows", "Wrap long labels"]);
+    assert.deepEqual(names, ["Corner radius", "Justify", "Wrap pills onto new rows", "Bold chosen pill", "Wrap long labels"]);
     const justify = shape.groups[0].slices.find((s) => s.displayName === "Justify");
     assert.equal(justify.control.properties.value, "left");
     assert.equal(justify.control.properties.descriptor.propertyName, "justify");
